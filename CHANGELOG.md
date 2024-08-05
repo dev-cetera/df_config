@@ -4,6 +4,7 @@
 
 - Released @ 8/2024 (UTC)
 - chore: Update imports in _index.g.dart
+- chore: Update workflow scripts
 
 ## [0.1.0]
 
