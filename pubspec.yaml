@@ -9,7 +9,7 @@
 
 name: df_config
 description: A package that provides methods to load configuration data and access it at runtime.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/robmllze/df_config
 
 ## -----------------------------------------------------------------------------
