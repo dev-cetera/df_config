@@ -2,7 +2,7 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
 // Dart/Flutter (DF) Packages by DevCetra.com & contributors. SSee MIT LICENSE
-// file in the root directory.
+// file in root directory.
 //
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
@@ -48,14 +48,14 @@ class TranslationFileReader {
     String? fileName,
   }) async {
     final filePath = p.joinAll([
-      ...this.translationsDirPath,
-      fileName ?? '$localeCode.${this.fileType.extension}',
+      ...translationsDirPath,
+      fileName ?? '$localeCode.${fileType.extension}',
     ]);
     final fileConfig = FileConfig(
       ref: ConfigFileRef(
         ref: localeCode,
-        type: this.fileType,
-        read: () => this.fileReader(filePath),
+        type: fileType,
+        read: () => fileReader(filePath),
       ),
       settings: const ReplacePatternsSettings(caseSensitive: false),
     );

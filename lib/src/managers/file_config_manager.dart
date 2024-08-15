@@ -2,7 +2,7 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
 // Dart/Flutter (DF) Packages by DevCetra.com & contributors. SSee MIT LICENSE
-// file in the root directory.
+// file in root directory.
 //
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
@@ -26,10 +26,9 @@ class FileConfigManager extends ConfigManager {
   //
 
   Future<void> setFileConfig(FileConfig fileConfig) async {
-    final added =
-        this.configs.firstWhereOrNull((e) => e.ref == fileConfig.ref) != null;
+    final added = configs.firstWhereOrNull((e) => e.ref == fileConfig.ref) != null;
     if (!added) {
-      this.configs.add(fileConfig);
+      configs.add(fileConfig);
       await fileConfig.readAssociatedFile();
     }
   }

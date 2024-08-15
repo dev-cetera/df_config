@@ -2,7 +2,7 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
 // Dart/Flutter (DF) Packages by DevCetra.com & contributors. SSee MIT LICENSE
-// file in the root directory.
+// file in root directory.
 //
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
@@ -45,18 +45,18 @@ class FileConfig extends Config<ConfigFileRef> {
 
   /// Reads and processes the associated file.
   Future<bool> readAssociatedFile() async {
-    switch (this.ref?.type) {
+    switch (ref?.type) {
       case ConfigFileType.JSON:
-        await this._readJsonFile();
+        await _readJsonFile();
         break;
       case ConfigFileType.JSONC:
-        await this._readJsoncFile();
+        await _readJsoncFile();
         break;
       case ConfigFileType.YAML:
-        await this._readYamlFile();
+        await _readYamlFile();
         break;
       case ConfigFileType.CSV:
-        await this._readCsvFile();
+        await _readCsvFile();
         break;
       default:
         return false;
@@ -66,37 +66,37 @@ class FileConfig extends Config<ConfigFileRef> {
 
   /// Processes a JSON file.
   Future<void> _readJsonFile() async {
-    final src = await this.ref?.read?.call();
+    final src = await ref?.read?.call();
     if (src != null) {
       final data = jsonToData(src);
-      this.setFields(data);
+      setFields(data);
     }
   }
 
   /// Processes a JSONC file.
   Future<void> _readJsoncFile() async {
-    var src = await this.ref?.read?.call();
+    var src = await ref?.read?.call();
     if (src != null) {
       final data = jsoncToData(src);
-      this.setFields(data);
+      setFields(data);
     }
   }
 
   /// Processes a YAML file.
   Future<void> _readYamlFile() async {
-    final src = await this.ref?.read?.call();
+    final src = await ref?.read?.call();
     if (src != null) {
       final data = yamlToData(src);
-      this.setFields(data);
+      setFields(data);
     }
   }
 
   /// Processes a CSV file.
   Future<void> _readCsvFile() async {
-    final src = await this.ref?.read?.call();
+    final src = await ref?.read?.call();
     if (src != null) {
-      final data = csvToData(src, this.settings);
-      this.setFields(data);
+      final data = csvToData(src, settings);
+      setFields(data);
     }
   }
 }
