@@ -7,19 +7,12 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import '/src/_index.g.dart';
+import 'package:df_string/df_string.dart';
+
+import 'tr_on_string_extension.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-extension CfOnStringExtension on String {
-  /// Maps the string to using the active config file.
-  T? cf<T>(
-    Config config, [
-    Map<dynamic, dynamic> args = const {},
-  ]) {
-    return config.map<T>(
-      this,
-      args: args,
-    );
-  }
+String screenTr(String input, String category, {Map<dynamic, dynamic> args = const {}}) {
+  return input.splitByLastOccurrenceOf('||').join('||$category.').tr(args: args);
 }

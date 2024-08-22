@@ -7,7 +7,19 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-/// A package that provides methods to load configuration data and access it at runtime.
-library df_config;
+import '/src/_index.g.dart';
 
-export 'src/_index.g.dart';
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+extension CfOnStringX on String {
+  /// Maps the string to using the active config file.
+  T? cf<T>(
+    Config config, [
+    Map<dynamic, dynamic> args = const {},
+  ]) {
+    return config.map<T>(
+      this,
+      args: args,
+    );
+  }
+}

@@ -8,6 +8,6 @@
 //.title~
 
 /// A package that provides methods to load configuration data and access it at runtime.
-library df_config;
+library df_translate;
 
-export 'src/_index.g.dart';
+export 'df_translate_src/_index.g.dart';

@@ -9,6 +9,8 @@
 
 import 'package:df_collection/df_collection.dart';
 
+import 'translation_manager.dart';
+
 import '/src/_index.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░

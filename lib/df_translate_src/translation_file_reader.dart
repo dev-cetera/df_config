@@ -10,6 +10,7 @@
 import 'package:path/path.dart' as p;
 
 import '/src/_index.g.dart';
+import 'translation_manager.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
