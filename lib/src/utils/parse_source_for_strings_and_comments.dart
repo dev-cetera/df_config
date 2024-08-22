@@ -1,8 +1,9 @@
 //.title
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
-// Dart/Flutter (DF) Packages by DevCetra.com & contributors. SSee MIT LICENSE
-// file in root directory.
+// Dart/Flutter (DF) Packages by DevCetra.com & contributors. Use of this
+// source code is governed by an MIT-style license that can be found in the
+// LICENSE file located in this project's root directory.
 //
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
@@ -18,22 +19,19 @@ ParseSourceForStringsAndCommentsResult parseSourceForStringsAndComments(
   var buffer = '';
   final cNull = const Utf8Decoder().convert([0]);
   final cNotNewline = RegExp('[^\n]');
-  final matchesMultiLineComments =
-      RegExp(_REG_EXP_MULTI_LINE_COMMENT).allMatches(source);
+  final matchesMultiLineComments = RegExp(_REG_EXP_MULTI_LINE_COMMENT).allMatches(source);
   for (final match in matchesMultiLineComments) {
     final a = match.group(0)!;
     final b = a.replaceAll(cNotNewline, cNull);
     buffer = source.replaceFirst(a, b);
   }
-  final matchesQuotedStrings =
-      RegExp(_REG_EXP_QUOTED_STRING).allMatches(buffer);
+  final matchesQuotedStrings = RegExp(_REG_EXP_QUOTED_STRING).allMatches(buffer);
   for (final match in matchesQuotedStrings) {
     final a = match.group(0)!;
     final b = a.replaceAll(cNotNewline, cNull);
     buffer = buffer.replaceFirst(a, b);
   }
-  final matchesSingleLineComments =
-      RegExp(_REG_EXP_SINGLE_LINE_COMMENT).allMatches(buffer);
+  final matchesSingleLineComments = RegExp(_REG_EXP_SINGLE_LINE_COMMENT).allMatches(buffer);
   final multiLineComments = <String>[];
   for (final match in matchesMultiLineComments) {
     multiLineComments.add(source.substring(match.start, match.end));
@@ -63,8 +61,7 @@ ParseSourceForStringsAndCommentsResult parseSourceForStringsAndComments(
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-const _REG_EXP_MULTI_LINE_COMMENT =
-    r'(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)';
+const _REG_EXP_MULTI_LINE_COMMENT = r'(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)';
 const _REG_EXP_SINGLE_LINE_COMMENT = r'\/\/.*';
 const _REG_EXP_QUOTED_STRING = r'''(["'])([^\\]*?(?:\\.[^\\]*?)*)\1''';
 
