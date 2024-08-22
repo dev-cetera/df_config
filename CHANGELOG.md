@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.0]
+
+- Released @ 8/2024 (UTC)
+- chore: Separate translation features into df_config library, update comments
+
 ## [0.2.0]
 
 - Released @ 8/2024 (UTC)
