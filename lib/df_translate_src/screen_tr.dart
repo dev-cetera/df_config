@@ -9,10 +9,13 @@
 
 import 'package:df_string/df_string.dart';
 
-import 'tr_on_string_extension.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-String screenTr(String input, String category, {Map<dynamic, dynamic> args = const {}}) {
-  return input.splitByLastOccurrenceOf('||').join('||$category.').tr(args: args);
+String screenTr(String input, String category,
+    {Map<dynamic, dynamic> args = const {},}) {
+  return input
+      .splitByLastOccurrenceOf('||')
+      .join('||$category.')
+      .tr(args: args);
 }
