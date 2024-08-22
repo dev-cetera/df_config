@@ -9,7 +9,6 @@
 
 // --- PUBLIC FILES ---
 export 'tr_on_string_extension.dart';
-export 'screen_tr.dart';
 export 'locale_ref.dart';
 export 'translation_manager.dart';
 export 'translation_file_reader.dart';
