@@ -33,9 +33,8 @@ extension TrOnStringExtension on String {
     final defaultSettings = const ReplacePatternsSettings();
     var input = this;
     if (category.isNotEmpty) {
-      input = input
-      .splitByLastOccurrenceOf(defaultSettings.delimiter)
-      .join('||${category.isNotEmpty ? '$category${defaultSettings.separator}' : ''}');
+      input = input.splitByLastOccurrenceOf(defaultSettings.delimiter).join(
+          '||${category.isNotEmpty ? '$category${defaultSettings.separator}' : ''}',);
     }
 
     final config = TranslationManager.translationFileConfig;

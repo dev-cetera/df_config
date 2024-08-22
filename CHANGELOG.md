@@ -5,6 +5,7 @@
 - Released @ 8/2024 (UTC)
 - chore: Separate translation features into df_config library, update comments
 - chore: Update license information in code files
+- feat: Add a catagory param to the tr exension method
 
 ## [0.2.0]
 
