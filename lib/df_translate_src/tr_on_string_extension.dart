@@ -34,7 +34,8 @@ extension TrOnStringExtension on String {
     var input = this;
     if (category.isNotEmpty) {
       input = input.splitByLastOccurrenceOf(defaultSettings.delimiter).join(
-          '||${category.isNotEmpty ? '$category${defaultSettings.separator}' : ''}',);
+            '||${category.isNotEmpty ? '$category${defaultSettings.separator}' : ''}',
+          );
     }
 
     final config = TranslationManager.translationFileConfig;
