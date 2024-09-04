@@ -57,5 +57,5 @@ Iterable<String> extractScopes(
     return result.isNotEmpty ? result : null;
   }
 
-  return letAsOrNull<List>($parse())?.map((e) => e?.toString()).nonNulls ?? [];
+  return letAsOrNull<List<dynamic>>($parse())?.map((e) => e?.toString()).nonNulls ?? [];
 }

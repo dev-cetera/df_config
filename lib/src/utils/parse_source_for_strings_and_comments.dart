@@ -51,11 +51,10 @@ ParseSourceForStringsAndCommentsResult parseSourceForStringsAndComments(
   }
   quotedStrings.removeWhere(
     (a) =>
-        singleLineComments.cast().firstWhere(
+        singleLineComments.firstWhere(
               (b) => b.contains(a),
-              orElse: () => null,
-            ) !=
-        null,
+              orElse: () => '',
+            ) .isNotEmpty,
   );
   return ParseSourceForStringsAndCommentsResult(
     List.unmodifiable(quotedStrings),

@@ -19,7 +19,7 @@ import '/src/_index.g.dart';
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 /// A configuration class, used to map strings to values.
-class Config<TConfigRef extends ConfigRef> extends Equatable {
+class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
   //
   //
   //
@@ -28,10 +28,10 @@ class Config<TConfigRef extends ConfigRef> extends Equatable {
   final TConfigRef? ref;
 
   /// The parsed fields of the config.
-  late final Map parsedFields;
+  late final Map<dynamic, dynamic> parsedFields;
 
   // The unparsed data of the config.
-  late final Map data;
+  late final Map<dynamic, dynamic> data;
 
   //
   //
@@ -56,13 +56,22 @@ class Config<TConfigRef extends ConfigRef> extends Equatable {
   //
 
   /// Sets the fields of the config from a JSON map.
-  void setFields(Map data) {
+  void setFields(Map<dynamic, dynamic> data) {
     this.data
       ..clear()
       ..addAll(data);
     this.parsedFields
       ..clear()
-      ..addAll(expandJson(recursiveReplace(data, settings: this.settings)));
+      ..addAll(
+        expandJson(
+          recursiveReplace(
+            data,
+            settings: this.settings,
+          ).mapKeys(
+            (e) => e.toString(),
+          ),
+        ),
+      );
   }
 
   //
@@ -77,7 +86,7 @@ class Config<TConfigRef extends ConfigRef> extends Equatable {
     ReplacePatternsSettings? settings,
   }) {
     final settingsOverride = settings ?? this.settings;
-    final expandedArgs = expandJson(args);
+    final expandedArgs = expandJson(args.mapKeys((e) => e.toString()));
     var data = {
       ...this.parsedFields,
       ...expandedArgs,
@@ -92,7 +101,7 @@ class Config<TConfigRef extends ConfigRef> extends Equatable {
       data,
       settings: settingsOverride,
     );
-    final res = let<T>(r) ?? fallback;
+    final res = letOrNull<T>(r) ?? fallback;
     return res;
   }
 

@@ -14,7 +14,7 @@
 /// map, supporting default values and custom delimiters.
 String replacePatterns(
   String input,
-  Map data, {
+  Map<dynamic, dynamic> data, {
   ReplacePatternsSettings settings = const ReplacePatternsSettings(),
 }) {
   var output = input;
@@ -30,9 +30,8 @@ String replacePatterns(
     final e1 = parts.elementAtOrNull(1);
     final key = (e1 ?? e0)!;
     final defaultValue = e0 ?? key;
-    final data1 = settings.caseSensitive
-        ? data
-        : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
+    final data1 =
+        settings.caseSensitive ? data : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
     final key1 = settings.caseSensitive ? key : key.toLowerCase();
     final suggestedReplacementValue = data1[key1];
     final replacementValue =
@@ -51,7 +50,7 @@ extension ReplaceAllPatternsOnStringExtension on String {
   /// Replaces placeholders in this string with corresponding values from a
   /// provided map, supporting default values and custom delimiters.
   String replacePatterns(
-    Map data, {
+    Map<dynamic, dynamic> data, {
     ReplacePatternsSettings settings = const ReplacePatternsSettings(),
   }) {
     return _replacePatterns(

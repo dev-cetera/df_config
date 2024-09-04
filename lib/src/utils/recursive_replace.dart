@@ -20,19 +20,19 @@ import 'replace_patterns.dart';
 /// placeholders defined by the map's own key-value pairs. It supports nested
 /// structures (maps and lists) and replaces placeholders in strings with
 /// corresponding values.
-Map recursiveReplace(
-  Map input, {
+Map<dynamic, dynamic> recursiveReplace(
+  Map<dynamic, dynamic> input, {
   ReplacePatternsSettings settings = const ReplacePatternsSettings(),
 }) {
   final data = expandFlattenedJson(
-    flattenJson(input, separator: settings.separator),
+    flattenJson(input.mapKeys((e) => e.toString()), separator: settings.separator),
     separator: settings.separator,
   );
 
-  dynamic $replace<T>(dynamic inputKey, dynamic inputValue) {
+  dynamic $replace(dynamic inputKey, dynamic inputValue) {
     dynamic r;
     if (inputValue is Map) {
-      r = {};
+      r = <dynamic, dynamic>{};
       for (final e in inputValue.entries) {
         final k = e.key;
 
@@ -65,5 +65,5 @@ Map recursiveReplace(
   }
 
   final res = $replace('', input);
-  return res;
+  return res as Map<dynamic, dynamic>;
 }
