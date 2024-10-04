@@ -11,6 +11,6 @@
 //.title~
 
 /// A package that provides methods to load configuration data and access it at runtime.
-library df_config;
+library;
 
 export 'src/_index.g.dart';
