@@ -39,7 +39,7 @@ class TranslationFileReader {
   const TranslationFileReader({
     required this.fileReader,
     this.fileType = ConfigFileType.YAML,
-    this.translationsDirPath = const ['translations'],
+    this.translationsDirPath = const ['assets', 'translations'],
   });
 
   //
@@ -48,16 +48,16 @@ class TranslationFileReader {
 
   /// Reads a locale file.
   Future<FileConfig> read(
-    String localeCode, {
+    String languageTag, {
     String? fileName,
   }) async {
     final filePath = p.joinAll([
       ...translationsDirPath,
-      fileName ?? '$localeCode.${fileType.extension}',
+      fileName ?? '$languageTag.${fileType.extension}',
     ]);
     final fileConfig = FileConfig(
       ref: ConfigFileRef(
-        ref: localeCode,
+        ref: languageTag,
         type: fileType,
         read: () => fileReader(filePath),
       ),

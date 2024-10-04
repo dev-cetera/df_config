@@ -15,7 +15,7 @@ A package that provides methods to load configuration data and access it at runt
 
 ## Usage Example
 
-Coming soon.
+Unavailable. Please check in later.
 
 ## Installation
 
