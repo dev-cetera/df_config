@@ -51,7 +51,7 @@ void main() async {
   // English.
   await reader.read('en-us');
   print('Example App||app.title'
-      .tr()); // prints "ENGLISH X EXAMPLE!!! additional"
+      .tr(),); // prints "ENGLISH X EXAMPLE!!! additional"
 
   // Undefined, defaults to "Example Application".
   await reader.read('qwerty');
