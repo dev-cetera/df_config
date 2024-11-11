@@ -61,7 +61,7 @@ Map<String, dynamic> csvToData(
   ReplacePatternsSettings settings = const ReplacePatternsSettings(),
 ]) {
   try {
-    final csv = csvToMap(src);
+    final csv = CsvUtility.i.csvToMap(src);
     final entries = csv.entries.map((e) {
       final value = e.value;
       if (value.length == 2) {

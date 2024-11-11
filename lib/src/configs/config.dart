@@ -63,7 +63,7 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
     this.parsedFields
       ..clear()
       ..addAll(
-        expandJson(
+        JsonUtility.i.expandJson(
           recursiveReplace(
             data,
             settings: this.settings,
@@ -86,7 +86,7 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
     ReplacePatternsSettings? settings,
   }) {
     final settingsOverride = settings ?? this.settings;
-    final expandedArgs = expandJson(args.mapKeys((e) => e.toString()));
+    final expandedArgs = JsonUtility.i.expandJson(args.mapKeys((e) => e.toString()));
     var data = {
       ...this.parsedFields,
       ...expandedArgs,

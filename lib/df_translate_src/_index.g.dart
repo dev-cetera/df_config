@@ -8,7 +8,7 @@
 //.title~
 
 // --- PUBLIC FILES ---
-export 'tr_on_string_extension.dart';
+export 'tr_on_string_x.dart';
 export 'locale_ref.dart';
 export 'translation_manager.dart';
 export 'translation_file_reader.dart';

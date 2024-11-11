@@ -22,7 +22,7 @@ void main() {
   group(1, () {
     test('Testing reader', () async {
       final reader = TranslationFileReader(
-        translationsDirPath: ['tests', 'translations'],
+        translationsDirPath: ['_tests', 'translations'],
         fileReader: (filePath) {
           final file = File(filePath);
           final content = file.readAsString();
@@ -35,7 +35,7 @@ void main() {
 
     test('Testing reader', () async {
       final reader = TranslationFileReader(
-        translationsDirPath: ['tests', 'translations'],
+        translationsDirPath: ['_tests', 'translations'],
         fileReader: (filePath) {
           final file = File(filePath);
           final content = file.readAsString();

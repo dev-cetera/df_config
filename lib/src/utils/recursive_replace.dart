@@ -24,8 +24,8 @@ Map<dynamic, dynamic> recursiveReplace(
   Map<dynamic, dynamic> input, {
   ReplacePatternsSettings settings = const ReplacePatternsSettings(),
 }) {
-  final data = expandFlattenedJson(
-    flattenJson(
+  final data = JsonUtility.i.expandFlattenedJson(
+    JsonUtility.i.flattenJson(
       input.mapKeys((e) => e.toString()),
       separator: settings.separator,
     ),

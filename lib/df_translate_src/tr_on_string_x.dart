@@ -18,7 +18,7 @@ import '_index.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-extension TrOnStringExtension on String {
+extension TrOnStringX on String {
   /// Translates the string using the active translation file.
   String tr({
     Map<dynamic, dynamic> args = const {},
