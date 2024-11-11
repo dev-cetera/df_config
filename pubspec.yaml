@@ -31,17 +31,17 @@ environment:
 ## -----------------------------------------------------------------------------
 
 dependencies:
-  df_collection: ^0.8.0
-  df_type: ^0.6.2
-  df_string: ^0.2.2
+  df_collection: ^0.8.2
+  df_type: ^0.7.2
+  df_string: ^0.2.3
 
   equatable: ^2.0.5
-  meta: ^1.15.0
-  path: ^1.9.0
+  meta: ^1.16.0
+  path: ^1.9.1
   yaml: ^3.1.2
 
 ## -----------------------------------------------------------------------------
 
 dev_dependencies:
-  lints: ^5.0.0
+  lints: ^5.1.0
   test: ^1.25.8

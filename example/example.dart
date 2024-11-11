@@ -50,9 +50,10 @@ void main() async {
 
   // English.
   await reader.read('en-us');
-  print('Example App||app.title'.tr()); // prints "ENGLISH X EXAMPLE!!! additional"
+  print('Example App||app.title'
+      .tr()); // prints "ENGLISH X EXAMPLE!!! additional"
 
-  // Undefined, defaults to "Example App".
+  // Undefined, defaults to "Example Application".
   await reader.read('qwerty');
   print(
     'Example {App;;app}||app.title'.tr(args: {'app': 'Application'}),
