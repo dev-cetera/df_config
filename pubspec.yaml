@@ -31,7 +31,7 @@ environment:
 ## -----------------------------------------------------------------------------
 
 dependencies:
-  df_collection: ^0.8.2
+  df_collection: ^0.8.3
   df_type: ^0.7.2
   df_string: ^0.2.3
 
