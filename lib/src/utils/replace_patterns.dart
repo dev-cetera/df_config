@@ -1,7 +1,7 @@
 //.title
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
-// Dart/Flutter (DF) Packages by DevCetra.com & contributors. The use of this
+// Dart/Flutter (DF) Packages by dev-cetera.com & contributors. The use of this
 // source code is governed by an MIT-style license described in the LICENSE
 // file located in this project's root directory.
 //
@@ -20,6 +20,8 @@ String replacePatterns(
   var output = input;
   final regex = RegExp(
     '${RegExp.escape(settings.opening)}(.*?)${RegExp.escape(settings.closing)}',
+    multiLine: true,
+    dotAll: true,
   );
   final matches = regex.allMatches(input);
   for (final match in matches) {
@@ -30,9 +32,8 @@ String replacePatterns(
     final e1 = parts.elementAtOrNull(1);
     final key = (e1 ?? e0)!;
     final defaultValue = e0 ?? key;
-    final data1 = settings.caseSensitive
-        ? data
-        : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
+    final data1 =
+        settings.caseSensitive ? data : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
     final key1 = settings.caseSensitive ? key : key.toLowerCase();
     final suggestedReplacementValue = data1[key1];
     final replacementValue =
@@ -41,13 +42,12 @@ String replacePatterns(
             defaultValue;
     output = output.replaceFirst(fullMatch, replacementValue);
   }
-
   return output;
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-extension ReplaceAllPatternsOnStringExtension on String {
+extension ReplaceAllPatternsOnStringX on String {
   /// Replaces placeholders in this string with corresponding values from a
   /// provided map, supporting default values and custom delimiters.
   String replacePatterns(

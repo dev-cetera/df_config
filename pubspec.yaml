@@ -1,7 +1,7 @@
 ##.title
 ## ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 ##
-## Dart/Flutter (DF) Packages by DevCetra.com & contributors. The use of this
+## Dart/Flutter (DF) Packages by dev-cetera.com & contributors. The use of this
 ## source code is governed by an MIT-style license described in the LICENSE
 ## file located in this project's root directory.
 ##
@@ -12,8 +12,8 @@
 
 name: df_config
 description: A package that provides methods to load configuration data and access it at runtime.
-version: 0.5.4
-repository: https://github.com/DevCetra/df_config
+version: 0.5.5
+repository: https://github.com/dev_cetera/df_config
 funding:
   - https://www.buymeacoffee.com/robmllze
 topics:

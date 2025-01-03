@@ -1,7 +1,7 @@
 //.title
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
-// Dart/Flutter (DF) Packages by DevCetra.com & contributors. The use of this
+// Dart/Flutter (DF) Packages by dev-cetera.com & contributors. The use of this
 // source code is governed by an MIT-style license described in the LICENSE
 // file located in this project's root directory.
 //
@@ -86,8 +86,7 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
     ReplacePatternsSettings? settings,
   }) {
     final settingsOverride = settings ?? this.settings;
-    final expandedArgs =
-        JsonUtility.i.expandJson(args.mapKeys((e) => e.toString()));
+    final expandedArgs = JsonUtility.i.expandJson(args.mapKeys((e) => e.toString()));
     var data = {
       ...this.parsedFields,
       ...expandedArgs,
