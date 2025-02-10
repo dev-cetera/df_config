@@ -24,7 +24,6 @@
 
 - Released @ 2/2025 (UTC)
 - chore: Update dependencies and examples
-- chore: Update dependencies
 
 ## [0.5.0]
 
