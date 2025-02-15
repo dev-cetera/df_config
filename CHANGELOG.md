@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.6.2]
+
+- Released @ 2/2025 (UTC)
+- fix: Fix dependency issue
+
 ## [0.6.1]
 
 - Released @ 2/2025 (UTC)
