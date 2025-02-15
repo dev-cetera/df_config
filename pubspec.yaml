@@ -12,7 +12,7 @@
 
 name: df_config
 description: A package that provides methods to load configuration data and access it at runtime.
-version: 0.6.1
+version: 0.6.2
 repository: https://github.com/dev-cetera/df_config
 funding:
   - https://www.buymeacoffee.com/dev_cetera
@@ -31,7 +31,7 @@ environment:
 ## -----------------------------------------------------------------------------
 
 dependencies:
-  df_collection: ^0.10.1
+  df_collection: ^0.9.1
   df_type: ^0.10.1
   df_string: ^0.2.3
 
