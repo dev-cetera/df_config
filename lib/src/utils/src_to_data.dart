@@ -62,19 +62,20 @@ Map<String, dynamic> csvToData(
 ]) {
   try {
     final csv = CsvUtility.i.csvToMap(src);
-    final entries = csv.entries.map((e) {
-      final value = e.value;
-      if (value.length == 2) {
-        return MapEntry(value[0], value[1]);
-      } else if (value.length > 2) {
-        return MapEntry(
-          value.sublist(0, value.length - 1).join(settings.separator),
-          value.last,
-        );
-      } else {
-        return null;
-      }
-    }).nonNulls;
+    final entries =
+        csv.entries.map((e) {
+          final value = e.value;
+          if (value.length == 2) {
+            return MapEntry(value[0], value[1]);
+          } else if (value.length > 2) {
+            return MapEntry(
+              value.sublist(0, value.length - 1).join(settings.separator),
+              value.last,
+            );
+          } else {
+            return null;
+          }
+        }).nonNulls;
     return Map<String, dynamic>.fromEntries(entries);
   } catch (_) {
     return {'error': 'Failed to load CSV file.'};

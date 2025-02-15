@@ -23,11 +23,7 @@ import 'package:df_type/df_type.dart';
 /// final scopes = extractScopes('{hello{world}', '{', '}');
 /// print(scopes); // Prints "([hello, [world]])"
 /// ```
-Iterable<String> extractScopes(
-  String source,
-  String opening,
-  String closing,
-) {
+Iterable<String> extractScopes(String source, String opening, String closing) {
   var index = 0;
   dynamic $parse() {
     final result = <dynamic>[];
@@ -57,8 +53,8 @@ Iterable<String> extractScopes(
     return result.isNotEmpty ? result : null;
   }
 
-  return letAsOrNull<List<dynamic>>($parse())
-          ?.map((e) => e?.toString())
-          .nonNulls ??
+  return letAsOrNull<List<dynamic>>(
+        $parse(),
+      )?.map((e) => e?.toString()).nonNulls ??
       [];
 }

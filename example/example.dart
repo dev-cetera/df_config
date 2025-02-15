@@ -56,9 +56,7 @@ void main() async {
 
   // Undefined, defaults to "Example Application".
   await reader.read('qwerty');
-  print(
-    'Example {App;;app}||app.title'.tr(args: {'app': 'Application'}),
-  );
+  print('Example {App;;app}||app.title'.tr(args: {'app': 'Application'}));
 
   // You can also pass custom arguments to the translation.
   await reader.read('en-us');

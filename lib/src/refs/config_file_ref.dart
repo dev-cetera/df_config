@@ -27,9 +27,5 @@ class ConfigFileRef extends ConfigRef<String, ConfigFileType> {
   //
   //
 
-  const ConfigFileRef({
-    super.ref,
-    super.type = ConfigFileType.YAML,
-    this.read,
-  });
+  const ConfigFileRef({super.ref, super.type = ConfigFileType.YAML, this.read});
 }

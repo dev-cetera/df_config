@@ -47,10 +47,7 @@ class TranslationFileReader {
   //
 
   /// Reads a locale file.
-  Future<FileConfig> read(
-    String languageTag, {
-    String? fileName,
-  }) async {
+  Future<FileConfig> read(String languageTag, {String? fileName}) async {
     final filePath = p.joinAll([
       ...translationsDirPath,
       fileName ?? '$languageTag.${fileType.extension}',

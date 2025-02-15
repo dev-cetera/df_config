@@ -33,13 +33,16 @@ extension TrOnStringX on String {
     final defaultSettings = const ReplacePatternsSettings();
     var input = this;
     if (category.isNotEmpty) {
-      input = input.splitByLastOccurrenceOf(defaultSettings.delimiter).join(
+      input = input
+          .splitByLastOccurrenceOf(defaultSettings.delimiter)
+          .join(
             '||${category.isNotEmpty ? '$category${defaultSettings.separator}' : ''}',
           );
     }
 
     final config = TranslationManager.translationFileConfig;
-    final temp = config.map<String>(
+    final temp =
+        config.map<String>(
           this,
           args: args,
           fallback: this,

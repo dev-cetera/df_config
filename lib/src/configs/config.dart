@@ -43,10 +43,7 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
   //
   //
 
-  Config({
-    this.ref,
-    this.settings = const ReplacePatternsSettings(),
-  }) {
+  Config({this.ref, this.settings = const ReplacePatternsSettings()}) {
     this.parsedFields = {};
     this.data = {};
   }
@@ -67,9 +64,7 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
           recursiveReplace(
             data,
             settings: this.settings,
-          ).mapKeys(
-            (e) => e.toString(),
-          ),
+          ).mapKeys((e) => e.toString()),
         ),
       );
   }
@@ -86,22 +81,16 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
     ReplacePatternsSettings? settings,
   }) {
     final settingsOverride = settings ?? this.settings;
-    final expandedArgs =
-        JsonUtility.i.expandJson(args.mapKeys((e) => e.toString()));
-    var data = {
-      ...this.parsedFields,
-      ...expandedArgs,
-    };
+    final expandedArgs = JsonUtility.i.expandJson(
+      args.mapKeys((e) => e.toString()),
+    );
+    var data = {...this.parsedFields, ...expandedArgs};
     var input = _addOpeningAndClosing(
       value,
       opening: settingsOverride.opening,
       closing: settingsOverride.closing,
     );
-    final r = replacePatterns(
-      input,
-      data,
-      settings: settingsOverride,
-    );
+    final r = replacePatterns(input, data, settings: settingsOverride);
     final res = letOrNull<T>(r) ?? fallback;
     return res;
   }

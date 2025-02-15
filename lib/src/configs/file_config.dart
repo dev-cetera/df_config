@@ -25,10 +25,7 @@ class FileConfig extends Config<ConfigFileRef> {
     Map<dynamic, dynamic> fields = const {},
     ReplacePatternsSettings settings = const ReplacePatternsSettings(),
   }) async {
-    final config = FileConfig(
-      ref: ref,
-      settings: settings,
-    );
+    final config = FileConfig(ref: ref, settings: settings);
     await config.readAssociatedFile();
     return config;
   }
@@ -37,10 +34,7 @@ class FileConfig extends Config<ConfigFileRef> {
   //
   //
 
-  FileConfig({
-    super.ref,
-    super.settings,
-  });
+  FileConfig({super.ref, super.settings});
 
   //
   //

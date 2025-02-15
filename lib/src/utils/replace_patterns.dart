@@ -32,15 +32,16 @@ String replacePatterns(
     final e1 = parts.elementAtOrNull(1);
     final key = (e1 ?? e0)!;
     final defaultValue = e0 ?? key;
-    final data1 = settings.caseSensitive
-        ? data
-        : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
+    final data1 =
+        settings.caseSensitive
+            ? data
+            : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
     final key1 = settings.caseSensitive ? key : key.toLowerCase();
     final suggestedReplacementValue = data1[key1];
     final replacementValue =
         settings.callback?.call(key, suggestedReplacementValue, defaultValue) ??
-            suggestedReplacementValue?.toString() ??
-            defaultValue;
+        suggestedReplacementValue?.toString() ??
+        defaultValue;
     output = output.replaceFirst(fullMatch, replacementValue);
   }
   return output;
@@ -55,11 +56,7 @@ extension ReplaceAllPatternsOnStringX on String {
     Map<dynamic, dynamic> data, {
     ReplacePatternsSettings settings = const ReplacePatternsSettings(),
   }) {
-    return _replacePatterns(
-      this,
-      data,
-      settings: settings,
-    ).toString();
+    return _replacePatterns(this, data, settings: settings).toString();
   }
 }
 
@@ -83,7 +80,8 @@ class ReplacePatternsSettings {
     String key,
     dynamic suggestedReplacementValue,
     String defaultValue,
-  )? callback;
+  )?
+  callback;
 
   //
   //

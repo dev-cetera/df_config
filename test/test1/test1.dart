@@ -50,22 +50,8 @@ void main() {
 
       expect('AU\nworld!', '<<<Australia||country>>>\nworld!'.tr());
       expect('AU', 'TEST||country'.tr());
-      expect(
-        'AU',
-        '{TEST}||country'.tr(
-          args: {
-            'TEST': '123',
-          },
-        ),
-      );
-      expect(
-        '123',
-        '{TEST}'.tr(
-          args: {
-            'TEST': '123',
-          },
-        ),
-      );
+      expect('AU', '{TEST}||country'.tr(args: {'TEST': '123'}));
+      expect('123', '{TEST}'.tr(args: {'TEST': '123'}));
     });
   });
 }

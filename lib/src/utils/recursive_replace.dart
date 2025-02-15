@@ -56,11 +56,7 @@ Map<dynamic, dynamic> recursiveReplace(
         r.add(res);
       }
     } else if (inputValue is String) {
-      r = replacePatterns(
-        inputValue,
-        data,
-        settings: settings,
-      );
+      r = replacePatterns(inputValue, data, settings: settings);
     } else {
       r = inputValue;
     }

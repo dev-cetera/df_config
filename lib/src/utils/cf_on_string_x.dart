@@ -16,13 +16,7 @@ import '/src/_index.g.dart';
 
 extension CfOnStringX on String {
   /// Maps the string to using the active config file.
-  T? cf<T>(
-    Config config, [
-    Map<dynamic, dynamic> args = const {},
-  ]) {
-    return config.map<T>(
-      this,
-      args: args,
-    );
+  T? cf<T>(Config config, [Map<dynamic, dynamic> args = const {}]) {
+    return config.map<T>(this, args: args);
   }
 }
