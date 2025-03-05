@@ -10,9 +10,8 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import 'package:df_string/df_string.dart';
-
-import '/src/_src.g.dart';
+import '/_common.dart';
+import '/src/_etc/_etc.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -22,7 +21,7 @@ extension TrOnStringX on String {
       {Map<dynamic, dynamic> args = const {},
       String? preferKey,
       String category = '',
-      PatternSettings? secondarySettings = const SecondaryPatternSettings()}) {
+      PatternSettings? secondarySettings = const SecondaryPatternSettings(),}) {
     final config = TranslationManager.translationFileConfig;
     final settings = config.settings;
     // Apply the category to the input if provided.

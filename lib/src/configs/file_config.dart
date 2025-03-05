@@ -10,26 +10,12 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import '/src/_src.g.dart';
+import '/_common.dart';
+import '/src/_etc/_etc.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 class FileConfig extends Config<ConfigFileRef> {
-  //
-  //
-  //
-
-  /// Creates a new [FileConfig] instance and reads its associated file.
-  static Future<FileConfig> read({
-    required ConfigFileRef ref,
-    Map<dynamic, dynamic> fields = const {},
-    PatternSettings settings = const PrimaryPatternSettings(),
-  }) async {
-    final config = FileConfig(ref: ref, settings: settings);
-    await config.readAssociatedFile();
-    return config;
-  }
-
   //
   //
   //
@@ -99,5 +85,20 @@ class FileConfig extends Config<ConfigFileRef> {
       final data = csvToData(src, settings);
       setFields(data);
     }
+  }
+
+  //
+  //
+  //
+
+  /// Creates a new [FileConfig] instance and reads its associated file.
+  static Future<FileConfig> read({
+    required ConfigFileRef ref,
+    Map<dynamic, dynamic> fields = const {},
+    PatternSettings settings = const PrimaryPatternSettings(),
+  }) async {
+    final config = FileConfig(ref: ref, settings: settings);
+    await config.readAssociatedFile();
+    return config;
   }
 }

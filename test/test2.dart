@@ -1,4 +1,5 @@
 import 'package:df_config/df_config.dart';
+import 'package:df_config/src/_etc/_etc.g.dart';
 import 'package:test/test.dart';
 
 void main() {

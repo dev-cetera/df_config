@@ -10,12 +10,14 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import '../_src.g.dart';
+import '/_common.dart';
+import '_etc.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 /// Replaces placeholders in a string with corresponding values from a provided
 /// map, supporting default values and custom delimiters.
+@internal
 String replacePatterns(
   String input,
   Map<dynamic, dynamic> data, {
@@ -50,9 +52,11 @@ String replacePatterns(
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
+@internal
 extension ReplaceAllPatternsOnStringX on String {
   /// Replaces placeholders in this string with corresponding values from a
   /// provided map, supporting default values and custom delimiters.
+  @internal
   String replacePatterns(
     Map<dynamic, dynamic> data, {
     String? preferKey,
@@ -72,47 +76,3 @@ extension ReplaceAllPatternsOnStringX on String {
 const _replacePatterns = replacePatterns;
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-
-class PatternSettings {
-  final String opening;
-  final String closing;
-  final String separator;
-  final String delimiter;
-  final bool caseSensitive;
-  final String? Function(
-    String key,
-    dynamic suggestedReplacementValue,
-    String defaultValue,
-  )? callback;
-
-  const PatternSettings({
-    this.opening = '{{',
-    this.closing = '}}',
-    this.separator = '.',
-    this.delimiter = '||',
-    this.caseSensitive = false,
-    this.callback,
-  });
-}
-
-final class PrimaryPatternSettings extends PatternSettings {
-  const PrimaryPatternSettings({super.callback})
-      : super(
-          opening: '{{',
-          closing: '}}',
-          separator: '.',
-          delimiter: '||',
-          caseSensitive: false,
-        );
-}
-
-final class SecondaryPatternSettings extends PatternSettings {
-  const SecondaryPatternSettings({super.callback})
-      : super(
-          opening: '{',
-          closing: '}',
-          separator: '.',
-          delimiter: '|',
-          caseSensitive: false,
-        );
-}

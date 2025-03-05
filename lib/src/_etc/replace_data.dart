@@ -10,24 +10,29 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import 'package:df_string/df_string.dart';
-
-import '../_src.g.dart';
+import '/_common.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-({String key, String defaultValue}) getKeyAndDefaultValue(
-  String input,
-  PatternSettings settings, {
-  String? preferKey,
-}) {
-  final parts = input.splitByLastOccurrenceOf(settings.delimiter);
-  final part0 = parts.elementAtOrNull(0);
-  final part1 = parts.elementAtOrNull(1);
-  final defaultValue = (part0 ?? part1)!;
-  var key = (preferKey ?? part1 ?? part0)!;
-  if (!settings.caseSensitive) {
-    key = key.toLowerCase();
+/// Replaces the keys of [data] in [input] with the corresponding values.
+@internal
+String replaceData(String input, Map<Pattern, dynamic> data) {
+  var output = input;
+  for (final entry in data.entries) {
+    final pattern = entry.key;
+    final value = entry.value;
+    output = output.replaceAll(pattern, value.toString());
   }
-  return (key: key, defaultValue: defaultValue);
+  return output;
 }
+
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+@internal
+extension ReplaceDataOnStringX on String {
+  /// Replaces the keys of [data] in this String with the corresponding values.
+  @internal
+  String replaceData(Map<String, dynamic> data) => _replaceData(this, data);
+}
+
+final _replaceData = replaceData;

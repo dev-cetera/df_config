@@ -10,17 +10,13 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import 'dart:convert';
-
-import 'package:df_collection/df_collection.dart';
-import 'package:df_type/df_type.dart';
-import 'package:yaml/yaml.dart';
-
-import '/src/_src.g.dart';
+import '/_common.dart';
+import '_etc.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 /// Converts raw JSON data to a key-value map.
+@internal
 Map<String, dynamic> jsonToData(String src) {
   try {
     return letMapOrNull<String, dynamic>(jsonDecode(src))!;
@@ -30,6 +26,7 @@ Map<String, dynamic> jsonToData(String src) {
 }
 
 /// Converts raw JSONC data to a key-value map.
+@internal
 Map<String, dynamic> jsoncToData(String src) {
   final result = parseSourceForStringsAndComments(src);
   for (final c in result.multiLineComments) {
@@ -47,6 +44,7 @@ Map<String, dynamic> jsoncToData(String src) {
 }
 
 /// Converts raw YAML data to a key-value map.
+@internal
 Map<String, dynamic> yamlToData(String src) {
   try {
     return letMapOrNull<String, dynamic>(loadYaml(src))!;
@@ -56,6 +54,7 @@ Map<String, dynamic> yamlToData(String src) {
 }
 
 /// Converts raw CSV data to a key-value map.
+@internal
 Map<String, dynamic> csvToData(
   String src, [
   PatternSettings settings = const PrimaryPatternSettings(),

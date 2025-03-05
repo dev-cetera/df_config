@@ -1,5 +1,4 @@
 import 'package:df_config/df_config.dart';
-import 'package:test/test.dart';
 
 void main() {
   final settings = const PrimaryPatternSettings();

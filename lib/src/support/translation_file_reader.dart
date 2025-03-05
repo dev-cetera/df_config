@@ -10,9 +10,7 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import 'package:path/path.dart' as p;
-
-import '/src/_src.g.dart';
+import '/_common.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -73,7 +71,7 @@ class TranslationFileReader {
   }) async {
     final fileReader1 = fileReader ?? this.fileReader;
     assert(fileReader1 != null, 'A file reader function must be provided.');
-    final filePath = p.joinAll([
+    final filePath = joinAll([
       ...translationsDirPath,
       fileName ?? '$languageTag.${fileType.extension}',
     ]);

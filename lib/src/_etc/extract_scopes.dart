@@ -10,7 +10,7 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import 'package:df_type/df_type.dart';
+import '/_common.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -23,6 +23,7 @@ import 'package:df_type/df_type.dart';
 /// final scopes = extractScopes('{hello{world}', '{', '}');
 /// print(scopes); // Prints "([hello, [world]])"
 /// ```
+@internal
 Iterable<String> extractScopes(String source, String opening, String closing) {
   var index = 0;
   dynamic $parse() {

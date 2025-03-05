@@ -7,15 +7,10 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-export './configs/config.dart';
-export './configs/file_config.dart';
-export './managers/config_manager.dart';
-export './managers/file_config_manager.dart';
-export './managers/translation_manager.dart';
-export './refs/config_file_ref.dart';
-export './refs/config_ref.dart';
-export './support/cf_on_string_x.dart';
-export './support/config_file_type.dart';
-export './support/pattern_settings.dart';
-export './support/translation_file_reader.dart';
-export './support/tr_on_string_x.dart';
+export './extract_scopes.dart';
+export './get_key_and_default_value.dart';
+export './parse_source_for_strings_and_comments.dart';
+export './recursive_replace.dart';
+export './replace_data.dart';
+export './replace_patterns.dart';
+export './to_data.dart';

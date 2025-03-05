@@ -10,19 +10,11 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import '/src/_src.g.dart';
+import '/_common.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// A manager for translation config files.
 class TranslationManager extends FileConfigManager {
-  //
-  //
-  //
-
-  static var _translationFileConfig = FileConfig();
-  static FileConfig get translationFileConfig => _translationFileConfig;
-
   //
   //
   //
@@ -38,4 +30,11 @@ class TranslationManager extends FileConfigManager {
     await super.setFileConfig(fileConfig);
     _translationFileConfig = fileConfig;
   }
+
+  //
+  //
+  //
+
+  static var _translationFileConfig = FileConfig();
+  static FileConfig get translationFileConfig => _translationFileConfig;
 }

@@ -10,11 +10,8 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import 'package:df_collection/df_collection.dart';
-import 'package:df_type/df_type.dart';
-import 'package:equatable/equatable.dart';
-
-import '/src/_src.g.dart';
+import '/_common.dart';
+import '/src/_etc/_etc.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -35,10 +32,6 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
 
   /// Specify to manually map the translation keys.
   final dynamic Function(String key)? mapper;
-
-  //
-  //
-  //
 
   final PatternSettings settings;
 

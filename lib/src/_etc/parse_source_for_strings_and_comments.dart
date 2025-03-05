@@ -10,11 +10,12 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import 'dart:convert';
+import '/_common.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 /// Extracts all quoted strings and comments from [source].
+@internal
 ParseSourceForStringsAndCommentsResult parseSourceForStringsAndComments(
   String source,
 ) {
@@ -75,6 +76,7 @@ const _REG_EXP_QUOTED_STRING = r'''(["'])([^\\]*?(?:\\.[^\\]*?)*)\1''';
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 /// The result of [parseSourceForStringsAndComments].
+@internal
 class ParseSourceForStringsAndCommentsResult {
   //
   //
