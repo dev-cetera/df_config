@@ -10,7 +10,32 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-/// A package that provides methods to load configuration data and access it at runtime.
-library;
+import '/src/_src.g.dart';
 
-export 'df_translate_src/_index.g.dart';
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+/// A manager for translation config files.
+class TranslationManager extends FileConfigManager {
+  //
+  //
+  //
+
+  static var _translationFileConfig = FileConfig();
+  static FileConfig get translationFileConfig => _translationFileConfig;
+
+  //
+  //
+  //
+
+  TranslationManager();
+
+  //
+  //
+  //
+
+  @override
+  Future<void> setFileConfig(FileConfig fileConfig) async {
+    await super.setFileConfig(fileConfig);
+    _translationFileConfig = fileConfig;
+  }
+}

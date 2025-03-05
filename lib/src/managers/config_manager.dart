@@ -12,7 +12,7 @@
 
 import 'package:df_collection/df_collection.dart';
 
-import '/src/_index.g.dart';
+import '/src/_src.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 

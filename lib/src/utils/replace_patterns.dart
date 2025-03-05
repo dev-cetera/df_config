@@ -10,16 +10,23 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
+import '../_src.g.dart';
+
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
 /// Replaces placeholders in a string with corresponding values from a provided
 /// map, supporting default values and custom delimiters.
 String replacePatterns(
   String input,
   Map<dynamic, dynamic> data, {
-  ReplacePatternsSettings settings = const ReplacePatternsSettings(),
+  String? preferKey,
+  PatternSettings settings = const PrimaryPatternSettings(),
 }) {
   var output = input;
+  final opening = RegExp.escape(settings.opening);
+  final closing = RegExp.escape(settings.closing);
   final regex = RegExp(
-    '${RegExp.escape(settings.opening)}(.*?)${RegExp.escape(settings.closing)}',
+    '$opening+(.*?)$closing+',
     multiLine: true,
     dotAll: true,
   );
@@ -27,21 +34,15 @@ String replacePatterns(
   for (final match in matches) {
     final fullMatch = match.group(0)!;
     final keyWithDefault = match.group(1)!;
-    final parts = keyWithDefault.split(settings.delimiter);
-    final e0 = parts.elementAtOrNull(0);
-    final e1 = parts.elementAtOrNull(1);
-    final key = (e1 ?? e0)!;
-    final defaultValue = e0 ?? key;
-    final data1 =
-        settings.caseSensitive
-            ? data
-            : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
-    final key1 = settings.caseSensitive ? key : key.toLowerCase();
-    final suggestedReplacementValue = data1[key1];
-    final replacementValue =
-        settings.callback?.call(key, suggestedReplacementValue, defaultValue) ??
+    final p = getKeyAndDefaultValue(keyWithDefault, settings, preferKey: preferKey);
+    final d = settings.caseSensitive
+        ? data
+        : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
+    final suggestedReplacementValue = d[p.key];
+    final replacementValue = settings.callback
+            ?.call(p.key, suggestedReplacementValue, p.defaultValue) ??
         suggestedReplacementValue?.toString() ??
-        defaultValue;
+        p.defaultValue;
     output = output.replaceFirst(fullMatch, replacementValue);
   }
   return output;
@@ -54,9 +55,15 @@ extension ReplaceAllPatternsOnStringX on String {
   /// provided map, supporting default values and custom delimiters.
   String replacePatterns(
     Map<dynamic, dynamic> data, {
-    ReplacePatternsSettings settings = const ReplacePatternsSettings(),
+    String? preferKey,
+    PatternSettings settings = const PrimaryPatternSettings(),
   }) {
-    return _replacePatterns(this, data, settings: settings).toString();
+    return _replacePatterns(
+      this,
+      data,
+      preferKey: preferKey,
+      settings: settings,
+    );
   }
 }
 
@@ -66,11 +73,7 @@ const _replacePatterns = replacePatterns;
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-class ReplacePatternsSettings {
-  //
-  //
-  //
-
+class PatternSettings {
   final String opening;
   final String closing;
   final String separator;
@@ -80,19 +83,36 @@ class ReplacePatternsSettings {
     String key,
     dynamic suggestedReplacementValue,
     String defaultValue,
-  )?
-  callback;
+  )? callback;
 
-  //
-  //
-  //
-
-  const ReplacePatternsSettings({
-    this.opening = '<<<',
-    this.closing = '>>>',
+  const PatternSettings({
+    this.opening = '{{',
+    this.closing = '}}',
     this.separator = '.',
     this.delimiter = '||',
-    this.caseSensitive = true,
+    this.caseSensitive = false,
     this.callback,
   });
+}
+
+final class PrimaryPatternSettings extends PatternSettings {
+  const PrimaryPatternSettings({super.callback})
+      : super(
+          opening: '{{',
+          closing: '}}',
+          separator: '.',
+          delimiter: '||',
+          caseSensitive: false,
+        );
+}
+
+final class SecondaryPatternSettings extends PatternSettings {
+  const SecondaryPatternSettings({super.callback})
+      : super(
+          opening: '{',
+          closing: '}',
+          separator: '.',
+          delimiter: '|',
+          caseSensitive: false,
+        );
 }

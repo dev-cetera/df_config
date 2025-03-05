@@ -1,0 +1,9 @@
+name: example_1
+publish_to: none
+environment:
+  sdk: ^3.7.0
+dependencies:
+  flutter:
+    sdk: flutter
+  df_config:
+    path: ../

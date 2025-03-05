@@ -22,7 +22,7 @@ import 'replace_patterns.dart';
 /// corresponding values.
 Map<dynamic, dynamic> recursiveReplace(
   Map<dynamic, dynamic> input, {
-  ReplacePatternsSettings settings = const ReplacePatternsSettings(),
+  PatternSettings settings = const PrimaryPatternSettings(),
 }) {
   final data = JsonUtility.i.expandFlattenedJson(
     JsonUtility.i.flattenJson(

@@ -13,4 +13,4 @@
 /// A package that provides methods to load configuration data and access it at runtime.
 library;
 
-export 'src/_index.g.dart';
+export 'src/_src.g.dart';

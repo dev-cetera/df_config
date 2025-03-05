@@ -13,7 +13,7 @@
 //import 'package:df_config/df_config.dart';
 import 'dart:io';
 
-import 'package:df_config/df_translate.dart';
+import 'package:df_config/df_config.dart';
 import 'package:test/test.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -48,7 +48,7 @@ void main() {
       final manager = TranslationManager();
       await manager.setFileConfig(content);
 
-      expect('AU\nworld!', '<<<Australia||country>>>\nworld!'.tr());
+      expect('AU\nworld!', '{{Australia||country}}\nworld!'.tr());
       expect('AU', 'TEST||country'.tr());
       expect('AU', '{TEST}||country'.tr(args: {'TEST': '123'}));
       expect('123', '{TEST}'.tr(args: {'TEST': '123'}));

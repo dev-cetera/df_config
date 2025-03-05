@@ -10,7 +10,7 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import '/src/_index.g.dart';
+import '/src/_src.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -23,7 +23,7 @@ class FileConfig extends Config<ConfigFileRef> {
   static Future<FileConfig> read({
     required ConfigFileRef ref,
     Map<dynamic, dynamic> fields = const {},
-    ReplacePatternsSettings settings = const ReplacePatternsSettings(),
+    PatternSettings settings = const PrimaryPatternSettings(),
   }) async {
     final config = FileConfig(ref: ref, settings: settings);
     await config.readAssociatedFile();
@@ -34,7 +34,11 @@ class FileConfig extends Config<ConfigFileRef> {
   //
   //
 
-  FileConfig({super.ref, super.settings});
+  FileConfig({
+    super.ref,
+    super.settings,
+    super.mapper,
+  });
 
   //
   //

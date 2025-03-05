@@ -11,7 +11,6 @@
 //.title~
 
 import 'package:df_config/df_config.dart';
-import 'package:df_config/df_translate.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -33,41 +32,38 @@ void main() async {
     // ConfigFileType.CSV.
     fileType: ConfigFileType.YAML,
     fileReader: (filePath) async {
-      print(filePath);
+      final unixPath = filePath.replaceAll(r'\', '/');
       // Read the file here and return its contents.
-      final contents = fileData[filePath] ?? '';
+      final contents = fileData[unixPath] ?? '';
       return contents;
+    },
+    mapper: (key) {
+      print('Requested ($key)');
     },
   );
 
-  // German.
-  await reader.read('de-de');
-  print('Example App||app.title'.tr()); // prints "BEISPIEL!!"
+  // // Spanish.
+  // await reader.read('es-es');
+  // print('Example App||app.title'.tr()); // prints "EJEMPLO!!"
 
-  // Spanish.
-  await reader.read('es-es');
-  print('Example App||app.title'.tr()); // prints "EJEMPLO!!"
-
-  // English.
-  await reader.read('en-us');
-  print(
-    'Example App||app.title'.tr(),
-  ); // prints "ENGLISH X EXAMPLE!!! additional"
+  // // English.
+  // await reader.read('en-us');
+  // print('Example App||app.title'.tr()); // prints "ENGLISH X EXAMPLE!!! additional"
 
   // Undefined, defaults to "Example Application".
   await reader.read('qwerty');
-  print('Example {App;;app}||app.title'.tr(args: {'app': 'Application'}));
+  print('Hey {{Example {App|app}||app.title}} dude'.tr(args: {'app': 'Application'}));
 
-  // You can also pass custom arguments to the translation.
-  await reader.read('en-us');
-  print(
-    'This is the <<<Example||app.title>>>'.tr(
-      args: {
-        // Replace {additional} in the translation with 'of the app!'.
-        'additional': 'of the app!',
-      },
-    ),
-  ); // prints "This is the ENGLISH X EXAMPLE!!! of the app!"
+  // // You can also pass custom arguments to the translation.
+  // await reader.read('en-us');
+  // print(
+  //   'This is the <<<Example||app.title>>>'.tr(
+  //     args: {
+  //       // Replace {additional} in the translation with 'of the app!'.
+  //       'additional': 'of the app!',
+  //     },
+  //   ),
+  // ); // prints "This is the ENGLISH X EXAMPLE!!! of the app!"
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░

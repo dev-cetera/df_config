@@ -14,7 +14,7 @@ import 'package:df_collection/df_collection.dart';
 import 'package:df_type/df_type.dart';
 import 'package:equatable/equatable.dart';
 
-import '/src/_index.g.dart';
+import '/src/_src.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -33,17 +33,24 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
   // The unparsed data of the config.
   late final Map<dynamic, dynamic> data;
 
-  //
-  //
-  //
-
-  final ReplacePatternsSettings settings;
+  /// Specify to manually map the translation keys.
+  final dynamic Function(String key)? mapper;
 
   //
   //
   //
 
-  Config({this.ref, this.settings = const ReplacePatternsSettings()}) {
+  final PatternSettings settings;
+
+  //
+  //
+  //
+
+  Config({
+    this.ref,
+    this.settings = const PrimaryPatternSettings(),
+    this.mapper,
+  }) {
     this.parsedFields = {};
     this.data = {};
   }
@@ -78,7 +85,8 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
     String value, {
     Map<dynamic, dynamic> args = const {},
     T? fallback,
-    ReplacePatternsSettings? settings,
+    String? preferKey,
+    PatternSettings? settings,
   }) {
     final settingsOverride = settings ?? this.settings;
     final expandedArgs = JsonUtility.i.expandJson(
@@ -90,9 +98,14 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
       opening: settingsOverride.opening,
       closing: settingsOverride.closing,
     );
-    final r = replacePatterns(input, data, settings: settingsOverride);
-    final res = letOrNull<T>(r) ?? fallback;
-    return res;
+    final replaced = replacePatterns(
+      input,
+      data,
+      preferKey: preferKey,
+      settings: settingsOverride,
+    );
+    final result = letOrNull<T>(replaced) ?? fallback;
+    return result;
   }
 
   //
@@ -100,7 +113,7 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
   //
 
   @override
-  List<Object?> get props => [...?this.ref?.props];
+  List<Object?> get props => [...?ref?.props];
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
