@@ -17,12 +17,13 @@ import '/src/_etc/_etc.g.dart';
 
 extension TrOnStringX on String {
   /// Translates the string using the active translation file.
-  String tr(
-      {Map<dynamic, dynamic> args = const {},
-      String? preferKey,
-      String category = '',
-      PatternSettings? secondarySettings = const SecondaryPatternSettings(),}) {
-    final config = TranslationManager.translationFileConfig;
+  String tr({
+    Map<dynamic, dynamic> args = const {},
+    String? preferKey,
+    String category = '',
+    PatternSettings? secondarySettings = const SecondaryPatternSettings(),
+  }) {
+    final config = TranslationManager.config;
     final settings = config.settings;
     // Apply the category to the input if provided.
     var input = this;
@@ -39,7 +40,7 @@ extension TrOnStringX on String {
       settings,
       preferKey: preferKey,
     );
-    var output1 = config.mapper?.call(p.key)?.toString();
+    var output1 = config.mapper?.call(p)?.toString();
     // Process the input with the primary settings.
     output1 ??= config.map<String>(
           input,

@@ -31,7 +31,7 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
   late final Map<dynamic, dynamic> data;
 
   /// Specify to manually map the translation keys.
-  final dynamic Function(String key)? mapper;
+  final dynamic Function(TGetKeyAndDefaultValueResult textResult)? mapper;
 
   final PatternSettings settings;
 

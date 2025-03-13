@@ -11,6 +11,7 @@
 //.title~
 
 import '/_common.dart';
+import '/src/_etc/_etc.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -30,7 +31,7 @@ class TranslationFileReader {
   final List<String> translationsDirPath;
 
   /// Specify to manually map the translation keys.
-  final dynamic Function(String key)? mapper;
+  final dynamic Function(TGetKeyAndDefaultValueResult textResult)? mapper;
 
   //
   //

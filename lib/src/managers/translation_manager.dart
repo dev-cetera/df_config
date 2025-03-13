@@ -28,13 +28,12 @@ class TranslationManager extends FileConfigManager {
   @override
   Future<void> setFileConfig(FileConfig fileConfig) async {
     await super.setFileConfig(fileConfig);
-    _translationFileConfig = fileConfig;
+    config = fileConfig;
   }
 
   //
   //
   //
 
-  static var _translationFileConfig = FileConfig();
-  static FileConfig get translationFileConfig => _translationFileConfig;
+  static var config = FileConfig();
 }

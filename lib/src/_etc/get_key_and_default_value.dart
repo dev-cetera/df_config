@@ -15,7 +15,7 @@ import '/_common.dart';
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 @internal
-({String key, String defaultValue}) getKeyAndDefaultValue(
+TGetKeyAndDefaultValueResult getKeyAndDefaultValue(
   String input,
   PatternSettings settings, {
   String? preferKey,
@@ -30,3 +30,5 @@ import '/_common.dart';
   }
   return (key: key, defaultValue: defaultValue);
 }
+
+typedef TGetKeyAndDefaultValueResult = ({String key, String defaultValue});
