@@ -36,13 +36,22 @@ String replacePatterns(
   for (final match in matches) {
     final fullMatch = match.group(0)!;
     final keyWithDefault = match.group(1)!;
-    final p = getKeyAndDefaultValue(keyWithDefault, settings, preferKey: preferKey);
-    final d = settings.caseSensitive
-        ? data
-        : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
+    final p = getKeyAndDefaultValue(
+      keyWithDefault,
+      settings,
+      preferKey: preferKey,
+    );
+    final d =
+        settings.caseSensitive
+            ? data
+            : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
     final suggestedReplacementValue = d[p.key];
-    final replacementValue = settings.callback
-            ?.call(p.key, suggestedReplacementValue, p.defaultValue) ??
+    final replacementValue =
+        settings.callback?.call(
+          p.key,
+          suggestedReplacementValue,
+          p.defaultValue,
+        ) ??
         suggestedReplacementValue?.toString() ??
         p.defaultValue;
     output = output.replaceFirst(fullMatch, replacementValue);

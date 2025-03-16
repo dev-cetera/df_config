@@ -53,12 +53,12 @@ class TranslationFileReader {
     this.fileType = ConfigFileType.YAML,
     this.mapper,
   }) : translationsDirPath = const [
-          'assets',
-          'packages',
-          'assets',
-          'assets',
-          'translations',
-        ];
+         'assets',
+         'packages',
+         'assets',
+         'assets',
+         'translations',
+       ];
 
   //
   //

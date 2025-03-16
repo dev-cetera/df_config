@@ -52,7 +52,11 @@ void main() async {
 
   // Undefined, defaults to "Example Application".
   await reader.read('qwerty');
-  print('Hey {{Example {App|app}||app.title}} dude'.tr(args: {'app': 'Application'}));
+  print(
+    'Hey {{Example {App|app}||app.title}} dude'.tr(
+      args: {'app': 'Application'},
+    ),
+  );
 
   // // You can also pass custom arguments to the translation.
   // await reader.read('en-us');

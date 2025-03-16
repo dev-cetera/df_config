@@ -20,7 +20,8 @@ class PatternSettings {
     String key,
     dynamic suggestedReplacementValue,
     String defaultValue,
-  )? callback;
+  )?
+  callback;
 
   const PatternSettings({
     this.opening = '{{',
@@ -34,22 +35,22 @@ class PatternSettings {
 
 final class PrimaryPatternSettings extends PatternSettings {
   const PrimaryPatternSettings({super.callback})
-      : super(
-          opening: '{{',
-          closing: '}}',
-          separator: '.',
-          delimiter: '||',
-          caseSensitive: false,
-        );
+    : super(
+        opening: '{{',
+        closing: '}}',
+        separator: '.',
+        delimiter: '||',
+        caseSensitive: false,
+      );
 }
 
 final class SecondaryPatternSettings extends PatternSettings {
   const SecondaryPatternSettings({super.callback})
-      : super(
-          opening: '{',
-          closing: '}',
-          separator: '.',
-          delimiter: '|',
-          caseSensitive: false,
-        );
+    : super(
+        opening: '{',
+        closing: '}',
+        separator: '.',
+        delimiter: '|',
+        caseSensitive: false,
+      );
 }

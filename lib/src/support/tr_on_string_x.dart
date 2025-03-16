@@ -30,19 +30,18 @@ extension TrOnStringX on String {
     if (category.isNotEmpty) {
       final delimiter = settings.delimiter;
       final separator = settings.separator;
-      input = input.splitByLastOccurrenceOf(delimiter).join(
+      input = input
+          .splitByLastOccurrenceOf(delimiter)
+          .join(
             '$delimiter${category.isNotEmpty ? '$category$separator' : ''}',
           );
     }
     // Process the input with the mapper function if provided.
-    final p = getKeyAndDefaultValue(
-      input,
-      settings,
-      preferKey: preferKey,
-    );
+    final p = getKeyAndDefaultValue(input, settings, preferKey: preferKey);
     var output1 = config.mapper?.call(p)?.toString();
     // Process the input with the primary settings.
-    output1 ??= config.map<String>(
+    output1 ??=
+        config.map<String>(
           input,
           args: args,
           fallback: input,
@@ -51,7 +50,8 @@ extension TrOnStringX on String {
         input;
     // Process the output again with the secondary settings if provided.
     if (secondarySettings != null) {
-      final output2 = config.map<String>(
+      final output2 =
+          config.map<String>(
             output1,
             args: args,
             fallback: output1,

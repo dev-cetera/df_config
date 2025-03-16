@@ -20,11 +20,7 @@ class FileConfig extends Config<ConfigFileRef> {
   //
   //
 
-  FileConfig({
-    super.ref,
-    super.settings,
-    super.mapper,
-  });
+  FileConfig({super.ref, super.settings, super.mapper});
 
   //
   //
