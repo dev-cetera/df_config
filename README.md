@@ -3,7 +3,7 @@
 
 Dart & Flutter Packages by dev-cetera.com & contributors.
 
-[![Pub Package](https://img.shields.io/pub/v/df_di.svg)](https://pub.dev/packages/df_di)
+[![Pub Package](https://img.shields.io/pub/v/df_config.svg)](https://pub.dev/packages/df_config)
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://raw.githubusercontent.com/dev-cetera/df_config/main/LICENSE)
 
 ---
