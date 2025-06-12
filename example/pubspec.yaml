@@ -1,4 +1,4 @@
-name: example_1
+name: df_config_example
 publish_to: none
 environment:
   sdk: ^3.7.0
