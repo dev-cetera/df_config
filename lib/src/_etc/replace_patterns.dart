@@ -41,10 +41,9 @@ String replacePatterns(
       settings,
       preferKey: preferKey,
     );
-    final d =
-        settings.caseSensitive
-            ? data
-            : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
+    final d = settings.caseSensitive
+        ? data
+        : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
     final suggestedReplacementValue = d[p.key];
     final replacementValue =
         settings.callback?.call(
