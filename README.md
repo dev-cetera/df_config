@@ -4,7 +4,7 @@
 Dart & Flutter Packages by dev-cetera.com & contributors.
 
 [![pub](https://img.shields.io/pub/v/df_config.svg)](https://pub.dev/packages/df_config)
-[![tag](https://img.shields.io/badge/tag-v0.7.3-purple)](https://github.com/dev-cetera/df_config/tree/v0.7.3)
+[![tag](https://img.shields.io/badge/tag-v0.7.4-purple)](https://github.com/dev-cetera/df_config/tree/v0.7.4)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/dev-cetera/df_config/main/LICENSE)
 
 ---
@@ -110,7 +110,7 @@ app:
 
 ---
 
-☝️ Please refer to the [API reference](https://pub.dev/documentation/df_config/) for more information.
+Please refer to the [API reference](https://pub.dev/documentation/df_config/) for more information.
 
 ---
 
@@ -137,7 +137,6 @@ If you're enjoying this package and find it valuable, consider showing your appr
 
 <a href="https://www.buymeacoffee.com/dev_cetera" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" height="40"></a>
 
-## 🧑‍⚖️ License
+## License
 
 This project is released under the [MIT License](https://raw.githubusercontent.com/dev-cetera/df_config/main/LICENSE). See [LICENSE](https://raw.githubusercontent.com/dev-cetera/df_config/main/LICENSE) for more information.
-
