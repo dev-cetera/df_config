@@ -16,7 +16,7 @@ repository: https://github.com/robmllze/df_config
 funding:
   - https://www.buymeacoffee.com/dev_cetera
 description: A package that provides methods to load configuration data and access it at runtime.
-version: 0.7.4
+version: 0.7.5
 topics:
   - cache
   - json
@@ -32,8 +32,8 @@ environment:
 ## -----------------------------------------------------------------------------
 
 dependencies:
-  df_collection: ^0.9.3
-  df_type: ^0.12.3
+  df_collection: ^0.9.8
+  df_type: ^0.14.2
   df_string: ^0.2.5
   equatable: ^2.0.7
   meta: ^1.16.0
