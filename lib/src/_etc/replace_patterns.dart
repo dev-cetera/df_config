@@ -1,9 +1,10 @@
 //.title
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
-// Dart/Flutter (DF) Packages by dev-cetera.com & contributors. The use of this
-// source code is governed by an MIT-style license described in the LICENSE
-// file located in this project's root directory.
+// Copyright © dev-cetera.com & contributors.
+//
+// The use of this source code is governed by an MIT-style license described in
+// the LICENSE file located in this project's root directory.
 //
 // See: https://opensource.org/license/mit
 //
@@ -41,12 +42,10 @@ String replacePatterns(
       settings,
       preferKey: preferKey,
     );
-    final d = settings.caseSensitive
-        ? data
-        : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
+    final d =
+        settings.caseSensitive ? data : data.map((k, v) => MapEntry(k.toString().toLowerCase(), v));
     final suggestedReplacementValue = d[p.key];
-    final replacementValue =
-        settings.callback?.call(
+    final replacementValue = settings.callback?.call(
           p.key,
           suggestedReplacementValue,
           p.defaultValue,

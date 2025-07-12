@@ -1,9 +1,10 @@
 //.title
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
-// Dart/Flutter (DF) Packages by dev-cetera.com & contributors. The use of this
-// source code is governed by an MIT-style license described in the LICENSE
-// file located in this project's root directory.
+// Copyright © dev-cetera.com & contributors.
+//
+// The use of this source code is governed by an MIT-style license described in
+// the LICENSE file located in this project's root directory.
 //
 // See: https://opensource.org/license/mit
 //
@@ -30,9 +31,7 @@ extension TrOnStringX on String {
     if (category.isNotEmpty) {
       final delimiter = settings.delimiter;
       final separator = settings.separator;
-      input = input
-          .splitByLastOccurrenceOf(delimiter)
-          .join(
+      input = input.splitByLastOccurrenceOf(delimiter).join(
             '$delimiter${category.isNotEmpty ? '$category$separator' : ''}',
           );
     }
@@ -40,8 +39,7 @@ extension TrOnStringX on String {
     final p = getKeyAndDefaultValue(input, settings, preferKey: preferKey);
     var output1 = config.mapper?.call(p)?.toString();
     // Process the input with the primary settings.
-    output1 ??=
-        config.map<String>(
+    output1 ??= config.map<String>(
           input,
           args: args,
           fallback: input,
@@ -50,8 +48,7 @@ extension TrOnStringX on String {
         input;
     // Process the output again with the secondary settings if provided.
     if (secondarySettings != null) {
-      final output2 =
-          config.map<String>(
+      final output2 = config.map<String>(
             output1,
             args: args,
             fallback: output1,
