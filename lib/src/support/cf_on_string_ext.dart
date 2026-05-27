@@ -15,32 +15,9 @@ import '/_common.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// A [ConfigManager] specialised for [FileConfig] instances.
-///
-/// Differs from the plain [ConfigManager] in that registering a config
-/// also reads its associated file in the same call, so the manager never
-/// hands out a config that has been registered but not yet populated.
-class FileConfigManager extends ConfigManager<FileConfig> {
-  //
-  //
-  //
-
-  FileConfigManager() : super(<FileConfig>{});
-
-  //
-  //
-  //
-
-  /// Registers [fileConfig] and reads its associated file.
-  ///
-  /// If a config with the same [ConfigFileRef] is already registered, it is
-  /// replaced by [fileConfig] and the new config is re-read. Any error from
-  /// the underlying read is rethrown to the caller — silent failure would
-  /// hide a stale or empty config, which is not acceptable in
-  /// safety-critical contexts.
-  Future<FileConfig> setFileConfig(FileConfig fileConfig) async {
-    final stored = setConfig(fileConfig);
-    await stored.readAssociatedFile();
-    return stored;
+extension CfOnStringExt on String {
+  /// Maps the string to using the active config file.
+  T? cf<T>(Config config, [Map<dynamic, dynamic> args = const {}]) {
+    return config.map<T>(this, args: args);
   }
 }

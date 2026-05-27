@@ -16,22 +16,25 @@ import '/src/_etc/_etc.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// Provides a way to easily read translation files.
+/// Convenience for loading translation files from disk or asset bundles.
 class TranslationFileReader {
   //
   //
   //
 
-  /// A function to read a file, such as `(filePath) => File(filePath).readAsString()` or `(filePath) => rootBundle.loadString(filePath)`.
+  /// A function to read a file. Typical implementations:
+  /// `(filePath) => File(filePath).readAsString()` on dart:io, or
+  /// `(filePath) => rootBundle.loadString(filePath)` on Flutter.
   final TFileReaderFunction? fileReader;
 
   /// The type of the files to read.
   final ConfigFileType fileType;
 
-  /// The directory path where the translations are stored.
+  /// The directory path segments where the translation files live.
+  /// Joined with [path.joinAll], so callers can stay platform-agnostic.
   final List<String> translationsDirPath;
 
-  /// Specify to manually map the translation keys.
+  /// Optional hook for custom key resolution. See [Config.mapper].
   final dynamic Function(TGetKeyAndDefaultValueResult textResult)? mapper;
 
   //
@@ -49,30 +52,32 @@ class TranslationFileReader {
   //
   //
 
-  const TranslationFileReader.withDefaultAssetsPackagePath({
-    this.fileReader,
-    this.fileType = ConfigFileType.YAML,
-    this.mapper,
-  }) : translationsDirPath = const [
-          'assets',
-          'packages',
-          'assets',
-          'assets',
-          'translations',
-        ];
-
-  //
-  //
-  //
-
-  /// Reads a locale file.
+  /// Reads a locale file and registers it with the active
+  /// [TranslationManager]. Returns the loaded [FileConfig].
+  ///
+  /// [fileReader] (parameter) overrides the instance-level [fileReader]
+  /// for this single call. If both are null, this throws [StateError] —
+  /// the previous `assert`-based check was a debug-mode-only guard and
+  /// would have produced a confusing NPE in release builds.
   Future<FileConfig> read(
     String languageTag, {
     String? fileName,
     TFileReaderFunction? fileReader,
   }) async {
-    final fileReader1 = fileReader ?? this.fileReader;
-    assert(fileReader1 != null, 'A file reader function must be provided.');
+    final effectiveReader = fileReader ?? this.fileReader;
+    if (effectiveReader == null) {
+      throw StateError(
+        'TranslationFileReader.read: no fileReader provided. Pass one to '
+        'the constructor or to read() directly.',
+      );
+    }
+    if (languageTag.isEmpty && (fileName == null || fileName.isEmpty)) {
+      throw ArgumentError.value(
+        languageTag,
+        'languageTag',
+        'languageTag must be non-empty when fileName is not provided.',
+      );
+    }
     final filePath = joinAll([
       ...translationsDirPath,
       fileName ?? '$languageTag.${fileType.extension}',
@@ -81,13 +86,12 @@ class TranslationFileReader {
       ref: ConfigFileRef(
         ref: languageTag,
         type: fileType,
-        read: () => fileReader1!(filePath),
+        read: () => effectiveReader(filePath),
       ),
-      settings: const PrimaryPatternSettings(),
+      settings: const PatternSettings(),
       mapper: mapper,
     );
-    await TranslationManager().setFileConfig(fileConfig);
-    return fileConfig;
+    return TranslationManager.setConfig(fileConfig);
   }
 }
 

@@ -16,59 +16,71 @@ import '/_common.dart';
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 /// Extracts all quoted strings and comments from [source].
+///
+/// Strategy: walk the source once, classifying each region into exactly one
+/// of {multi-line comment, single-line comment, quoted string, code}. Each
+/// region is classified by its *opening* token so nested or interleaved
+/// tokens cannot be double-counted. This avoids regex-order pitfalls (e.g.
+/// a `//` inside a `"..."` string being misread as a comment, or `*/`
+/// inside a string ending a comment).
 @internal
 ParseSourceForStringsAndCommentsResult parseSourceForStringsAndComments(
   String source,
 ) {
-  var buffer = '';
-  final cNull = const Utf8Decoder().convert([0]);
-  final cNotNewline = RegExp('[^\n]');
-  final matchesMultiLineComments = RegExp(
-    _REG_EXP_MULTI_LINE_COMMENT,
-  ).allMatches(source);
-  for (final match in matchesMultiLineComments) {
-    final a = match.group(0)!;
-    final b = a.replaceAll(cNotNewline, cNull);
-    buffer = source.replaceFirst(a, b);
-  }
-  final matchesQuotedStrings = RegExp(
-    _REG_EXP_QUOTED_STRING,
-  ).allMatches(buffer);
-  for (final match in matchesQuotedStrings) {
-    final a = match.group(0)!;
-    final b = a.replaceAll(cNotNewline, cNull);
-    buffer = buffer.replaceFirst(a, b);
-  }
-  final matchesSingleLineComments = RegExp(
-    _REG_EXP_SINGLE_LINE_COMMENT,
-  ).allMatches(buffer);
   final multiLineComments = <String>[];
-  for (final match in matchesMultiLineComments) {
-    multiLineComments.add(source.substring(match.start, match.end));
-  }
-  final quotedStrings = <String>[];
-  for (final match in matchesQuotedStrings) {
-    quotedStrings.add(source.substring(match.start, match.end));
-  }
   final singleLineComments = <String>[];
-  for (final match in matchesSingleLineComments) {
-    singleLineComments.add(source.substring(match.start, match.end));
+  final quotedStrings = <String>[];
+
+  final n = source.length;
+  var i = 0;
+  while (i < n) {
+    final remaining = n - i;
+    // Multi-line comment: /* ... */
+    if (remaining >= 2 && source[i] == '/' && source[i + 1] == '*') {
+      final end = source.indexOf('*/', i + 2);
+      final stop = end == -1 ? n : end + 2;
+      multiLineComments.add(source.substring(i, stop));
+      i = stop;
+      continue;
+    }
+    // Single-line comment: // ... (terminated by \n or EOF)
+    if (remaining >= 2 && source[i] == '/' && source[i + 1] == '/') {
+      var stop = source.indexOf('\n', i + 2);
+      if (stop == -1) stop = n;
+      singleLineComments.add(source.substring(i, stop));
+      i = stop;
+      continue;
+    }
+    // Quoted string: " ... " or ' ... '
+    final ch = source[i];
+    if (ch == '"' || ch == "'") {
+      final quote = ch;
+      var j = i + 1;
+      while (j < n) {
+        final c = source[j];
+        if (c == r'\' && j + 1 < n) {
+          j += 2;
+          continue;
+        }
+        if (c == quote) {
+          j++;
+          break;
+        }
+        j++;
+      }
+      quotedStrings.add(source.substring(i, j));
+      i = j;
+      continue;
+    }
+    i++;
   }
-  quotedStrings.removeWhere(
-    (a) => singleLineComments.firstWhere((b) => b.contains(a), orElse: () => '').isNotEmpty,
-  );
+
   return ParseSourceForStringsAndCommentsResult(
     List.unmodifiable(quotedStrings),
     List.unmodifiable(multiLineComments),
     List.unmodifiable(singleLineComments),
   );
 }
-
-// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-
-const _REG_EXP_MULTI_LINE_COMMENT = r'(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)';
-const _REG_EXP_SINGLE_LINE_COMMENT = r'\/\/.*';
-const _REG_EXP_QUOTED_STRING = r'''(["'])([^\\]*?(?:\\.[^\\]*?)*)\1''';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 

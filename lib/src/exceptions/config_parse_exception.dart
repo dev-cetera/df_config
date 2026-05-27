@@ -11,36 +11,41 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import '/_common.dart';
-
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// A [ConfigManager] specialised for [FileConfig] instances.
+/// Thrown when a configuration source cannot be parsed into a key-value map.
 ///
-/// Differs from the plain [ConfigManager] in that registering a config
-/// also reads its associated file in the same call, so the manager never
-/// hands out a config that has been registered but not yet populated.
-class FileConfigManager extends ConfigManager<FileConfig> {
+/// Carries the source kind (e.g. `'json'`) and the underlying error so
+/// callers can react programmatically instead of pattern-matching on a magic
+/// `{'error': ...}` map.
+class ConfigParseException implements Exception {
   //
   //
   //
 
-  FileConfigManager() : super(<FileConfig>{});
+  /// The source format that failed to parse (e.g. `'json'`, `'jsonc'`,
+  /// `'yaml'`, `'csv'`).
+  final String source;
+
+  /// A short human-readable message.
+  final String message;
+
+  /// The underlying error, if any.
+  final Object? cause;
 
   //
   //
   //
 
-  /// Registers [fileConfig] and reads its associated file.
-  ///
-  /// If a config with the same [ConfigFileRef] is already registered, it is
-  /// replaced by [fileConfig] and the new config is re-read. Any error from
-  /// the underlying read is rethrown to the caller — silent failure would
-  /// hide a stale or empty config, which is not acceptable in
-  /// safety-critical contexts.
-  Future<FileConfig> setFileConfig(FileConfig fileConfig) async {
-    final stored = setConfig(fileConfig);
-    await stored.readAssociatedFile();
-    return stored;
+  const ConfigParseException(this.source, this.message, [this.cause]);
+
+  //
+  //
+  //
+
+  @override
+  String toString() {
+    final base = 'ConfigParseException($source): $message';
+    return cause == null ? base : '$base [cause: $cause]';
   }
 }

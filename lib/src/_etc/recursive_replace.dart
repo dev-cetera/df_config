@@ -17,52 +17,63 @@ import '_etc.g.dart';
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 /// Performs recursive replacement of string values within a map using
-/// placeholders defined by the map's own key-value pairs. It supports nested
+/// placeholders defined by the map's own key-value pairs. Supports nested
 /// structures (maps and lists) and replaces placeholders in strings with
 /// corresponding values.
+///
+/// Resolves placeholders via [JsonUtility]'s flatten/expand, then walks the
+/// tree replacing only string leaves. A maximum recursion depth guards
+/// against runaway structures.
 Map<dynamic, dynamic> recursiveReplace(
   Map<dynamic, dynamic> input, {
-  PatternSettings settings = const PrimaryPatternSettings(),
+  PatternSettings settings = const PatternSettings(),
+  int maxDepth = 64,
 }) {
+  if (maxDepth <= 0) {
+    throw ArgumentError.value(maxDepth, 'maxDepth', 'must be > 0');
+  }
+  final sep = settings.separator;
   final data = JsonUtility.i.expandFlattenedJson(
     JsonUtility.i.flattenJson(
       input.mapKeys((e) => e.toString()),
-      separator: settings.separator,
+      separator: sep,
     ),
-    separator: settings.separator,
+    separator: sep,
   );
 
-  dynamic $replace(dynamic inputKey, dynamic inputValue) {
-    dynamic r;
-    if (inputValue is Map) {
-      r = <dynamic, dynamic>{};
-      for (final e in inputValue.entries) {
-        final k = e.key;
-
-        final v = e.value;
-        final res = $replace(k, v);
-        final localKey = '$settings.separator$k';
-        data[localKey] = res;
-        r[k] = res;
-      }
-    } else if (inputValue is List) {
-      r = <dynamic>[];
-      for (var n = 0; n < inputValue.length; n++) {
-        final k = '$inputKey$settings.separator$n';
-        final v = inputValue[n];
-        final res = $replace(k, v);
-        final localKey = '$settings.separator$k';
-        data[localKey] = res;
-        r.add(res);
-      }
-    } else if (inputValue is String) {
-      r = replacePatterns(inputValue, data, settings: settings);
-    } else {
-      r = inputValue;
+  dynamic walk(String path, dynamic value, int depth) {
+    if (depth > maxDepth) {
+      throw StateError(
+        'recursiveReplace exceeded maxDepth ($maxDepth) at path "$path"',
+      );
     }
-    return r;
+    if (value is Map) {
+      final out = <dynamic, dynamic>{};
+      for (final e in value.entries) {
+        final k = e.key;
+        final childPath = path.isEmpty ? '$k' : '$path$sep$k';
+        final replaced = walk(childPath, e.value, depth + 1);
+        data[childPath] = replaced;
+        out[k] = replaced;
+      }
+      return out;
+    }
+    if (value is List) {
+      final out = <dynamic>[];
+      for (var n = 0; n < value.length; n++) {
+        final childPath = path.isEmpty ? '$n' : '$path$sep$n';
+        final replaced = walk(childPath, value[n], depth + 1);
+        data[childPath] = replaced;
+        out.add(replaced);
+      }
+      return out;
+    }
+    if (value is String) {
+      return replacePatterns(value, data, settings: settings);
+    }
+    return value;
   }
 
-  final res = $replace('', input);
-  return res as Map<dynamic, dynamic>;
+  final result = walk('', input, 0);
+  return result as Map<dynamic, dynamic>;
 }

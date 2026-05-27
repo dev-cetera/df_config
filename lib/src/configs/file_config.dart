@@ -28,59 +28,32 @@ class FileConfig extends Config<ConfigFileRef> {
   //
 
   /// Reads and processes the associated file.
+  ///
+  /// Returns `true` if a file was read and its data ingested, `false` if
+  /// there was nothing to read (e.g. the ref or reader was null, or the
+  /// type is unsupported). Propagates [ConfigParseException] on malformed
+  /// content and any error thrown by the [ConfigFileRef.read] callback —
+  /// callers must decide whether to fall back, retry, or fail loudly.
   Future<bool> readAssociatedFile() async {
-    switch (ref?.type) {
+    final type = ref?.type;
+    if (type == null) return false;
+    final reader = ref?.read;
+    if (reader == null) return false;
+
+    final src = await reader();
+    switch (type) {
       case ConfigFileType.JSON:
-        await _readJsonFile();
-        break;
+        setFields(jsonToData(src));
+        return true;
       case ConfigFileType.JSONC:
-        await _readJsoncFile();
-        break;
+        setFields(jsoncToData(src));
+        return true;
       case ConfigFileType.YAML:
-        await _readYamlFile();
-        break;
+        setFields(yamlToData(src));
+        return true;
       case ConfigFileType.CSV:
-        await _readCsvFile();
-        break;
-      default:
-        return false;
-    }
-    return true;
-  }
-
-  /// Processes a JSON file.
-  Future<void> _readJsonFile() async {
-    final src = await ref?.read?.call();
-    if (src != null) {
-      final data = jsonToData(src);
-      setFields(data);
-    }
-  }
-
-  /// Processes a JSONC file.
-  Future<void> _readJsoncFile() async {
-    var src = await ref?.read?.call();
-    if (src != null) {
-      final data = jsoncToData(src);
-      setFields(data);
-    }
-  }
-
-  /// Processes a YAML file.
-  Future<void> _readYamlFile() async {
-    final src = await ref?.read?.call();
-    if (src != null) {
-      final data = yamlToData(src);
-      setFields(data);
-    }
-  }
-
-  /// Processes a CSV file.
-  Future<void> _readCsvFile() async {
-    final src = await ref?.read?.call();
-    if (src != null) {
-      final data = csvToData(src, settings);
-      setFields(data);
+        setFields(csvToData(src, settings));
+        return true;
     }
   }
 
@@ -92,7 +65,7 @@ class FileConfig extends Config<ConfigFileRef> {
   static Future<FileConfig> read({
     required ConfigFileRef ref,
     Map<dynamic, dynamic> fields = const {},
-    PatternSettings settings = const PrimaryPatternSettings(),
+    PatternSettings settings = const PatternSettings(),
   }) async {
     final config = FileConfig(ref: ref, settings: settings);
     await config.readAssociatedFile();

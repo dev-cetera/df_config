@@ -1,18 +1,19 @@
 name: df_config_example
 homepage: https://dev-cetera.com/
-repository: https://github.com/robmllze/df_config
 funding:
-- https://www.buymeacoffee.com/dev_cetera
-- https://www.patreon.com/c/RobertMollentze
-- https://github.com/sponsors/robmllze
+  - https://www.buymeacoffee.com/dev_cetera
+  - https://www.patreon.com/c/robelator
+  - https://github.com/sponsors/robelator
+
 publish_to: none
+version: 0.1.0
+
 environment:
   sdk: ">=3.5.0 <4.0.0"
-dependencies:
-  flutter:
-    sdk: flutter
-  df_config:
-    path: ../
-dev_dependencies:
-  flutter_lints: ^6.0.0
 
+dependencies:
+  df_config:
+    path: ..
+
+dev_dependencies:
+  lints: ^6.0.0

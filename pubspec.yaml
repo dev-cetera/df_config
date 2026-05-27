@@ -15,11 +15,11 @@ name: df_config
 homepage: https://dev-cetera.com/
 repository: https://github.com/robmllze/df_config
 funding:
-- https://www.buymeacoffee.com/dev_cetera
-- https://www.patreon.com/c/RobertMollentze
-- https://github.com/sponsors/robmllze
+  - https://www.buymeacoffee.com/dev_cetera
+  - https://www.patreon.com/c/robelator
+  - https://github.com/sponsors/robelator
 description: A package that provides methods to load configuration data and access it at runtime.
-version: 0.7.5
+version: 0.8.0
 topics:
   - cache
   - json
@@ -35,13 +35,14 @@ environment:
 ## -----------------------------------------------------------------------------
 
 dependencies:
-  df_collection: ^0.9.8
-  df_type: ^0.14.2
-  df_string: ^0.2.9
   equatable: ^2.0.7
   meta: ^1.16.0
   path: ^1.9.1
   yaml: ^3.1.3
+
+  df_collection: ^0.10.0
+  df_type: ^0.16.0
+  df_string: ^0.3.0
 
 ## -----------------------------------------------------------------------------
 

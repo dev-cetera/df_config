@@ -1,120 +1,150 @@
-<a href="https://www.buymeacoffee.com/dev_cetera" target="_blank"><img align="right" src="https://cdn.buymeacoffee.com/buttons/default-orange.png" height="48"></a>
-<a href="https://discord.gg/gEQ8y2nfyX" target="_blank"><img align="right" src="https://raw.githubusercontent.com/dev-cetera/.github/refs/heads/main/assets/icons/discord_icon/discord_icon.svg" height="48"></a>
-
-Dart & Flutter Packages by dev-cetera.com & contributors.
-
-[![sponsor](https://img.shields.io/badge/sponsor-grey?logo=github-sponsors)](https://github.com/sponsors/dev-cetera)
-[![patreon](https://img.shields.io/badge/patreon-grey?logo=patreon)](https://www.patreon.com/c/RobertMollentze)
 [![pub](https://img.shields.io/pub/v/df_config.svg)](https://pub.dev/packages/df_config)
-[![tag](https://img.shields.io/badge/tag-v0.7.5-purple?logo=github)](https://github.com/dev-cetera/df_config/tree/v0.7.5)
-[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/dev-cetera/df_config/main/LICENSE)
+[![tag](https://img.shields.io/badge/Tag-v0.8.0-purple?logo=github)](https://github.com/dev-cetera/df_config/tree/v0.8.0)
+[![buymeacoffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/dev_cetera)
+[![sponsor](https://img.shields.io/badge/Sponsor-grey?logo=github-sponsors&logoColor=pink)](https://github.com/sponsors/dev-cetera)
+[![patreon](https://img.shields.io/badge/Patreon-grey?logo=patreon)](https://www.patreon.com/robelator)
+[![discord](https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white)](https://discord.gg/gEQ8y2nfyX)
+[![instagram](https://img.shields.io/badge/Instagram-E4405F?logo=instagram&logoColor=white)](https://www.instagram.com/dev_cetera/)
+[![license](https://img.shields.io/badge/License-MIT-blue.svg)](https://raw.githubusercontent.com/dev-cetera/df_config/main/LICENSE)
 
 ---
-
-[![banner](https://github.com/dev-cetera/df_safer_dart/blob/v0.7.5/doc/assets/banner.png?raw=true)](https://github.com/dev-cetera)
 
 <!-- BEGIN _README_CONTENT -->
 
 ## Summary
 
-This package is designed to streamline loading and managing configuration data at runtime. It includes a powerful translation manager for handling multiple languages with ease, making localization straightforward. You can dynamically replace placeholders with runtime arguments and manage translations in formats like YAML, JSON, and more.
+`df_config` loads configuration data (YAML, JSON, JSONC, CSV) and exposes it through a tiny placeholder-substitution API. It powers `df_localization`, but is useful any time you want a config file that can reference itself and accept runtime overrides.
 
-## Example
+## What makes it interesting
+
+A config can **reference its own values** — the resolution happens at load time, so by the time you query a key you get the fully-substituted string. Combined with runtime arg overrides, the same file works for both static defaults and dynamic templating.
+
+```yaml
+# assets/translations/en-us.yaml
+app:
+  name: AcmeApp
+  tagline: "Welcome to {{app.name}}"      # references a sibling key
+  cta: "Get started with {{app.name}} {action}"  # `{action}` is filled at call-time
+```
+
+```dart
+'{{Get started||app.cta}}'.tr(args: {'action': 'now!'})
+// → "Get started with AcmeApp now!"
+```
+
+### Placeholder syntax in one paragraph
+
+- `{{ default || key }}` — primary form. Looks up `key` in the active config; if missing, returns `default`.
+- `{ default | key }` — secondary form. Resolved in a second pass against `args`, so single-brace tokens are reserved for runtime values (think `{name}`).
+- Keys can be **dotted paths** (`app.name`, `tags.0`) to reach into nested maps and lists.
+- Lookups are **case-insensitive** by default — change via `PatternSettings(caseSensitive: true)`.
+
+### Cross-references and templating in one example
 
 ```dart
 import 'package:df_config/df_config.dart';
-import 'package:df_config/df_translate.dart';
-
-// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-
-// NOTE TO FLUTTER DEVELOPERS:
-// To use this in Flutter, you need to refresh the widget tree after
-// changing the language. You can do this by wrapping your MaterialApp in a
-// ValueListenable and using a ValueNotifier, or any other method that
-// rebuilds the widget tree when the language changes.
-
-// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 void main() async {
-  // Create a reader that reads a YAML files.
+  await TranslationManager.setConfig(
+    await FileConfig.read(
+      ref: ConfigFileRef(
+        ref: 'en',
+        type: ConfigFileType.YAML,
+        read: () async => '''
+app:
+  name: AcmeApp
+  tagline: "Welcome to {{app.name}}"
+  cta: "Get started with {{app.name}} {action}"
+''',
+      ),
+    ),
+  );
+
+  print('Hi||app.tagline'.tr());
+  // → "Welcome to AcmeApp"
+
+  print('Default||app.cta'.tr(args: {'action': 'today!'}));
+  // → "Get started with AcmeApp today!"
+
+  // Unknown key → falls back to the `default` text before `||`.
+  print('Just a default||missing'.tr());
+  // → "Just a default"
+}
+```
+
+## A larger localization example
+
+```dart
+import 'package:df_config/df_config.dart';
+
+void main() async {
+  // Create a reader for YAML translation files in `assets/translations/`.
   final reader = TranslationFileReader(
-    // Specify the directory paths where the translation files are located,
-    // e.g. assets/translations/en-us.yaml.
-    translationsDirPath: ['assets', 'translations'],
-    // You can also choose ConfigFileType.JSON, ConfigFileType.JSONC or
-    // ConfigFileType.CSV.
+    translationsDirPath: const ['assets', 'translations'],
     fileType: ConfigFileType.YAML,
     fileReader: (filePath) async {
-      print(filePath);
-      // Read the file here and return its contents.
-      final contents = fileData[filePath] ?? '';
-      return contents;
+      // In Flutter this would be `rootBundle.loadString(filePath)`.
+      return fileData[filePath] ?? '';
     },
   );
 
   // German.
   await reader.read('de-de');
-  print('Example App||app.title'.tr()); // prints "BEISPIEL!!"
+  print('Example App||app.title'.tr());                // → "BEISPIEL!!!"
 
   // Spanish.
   await reader.read('es-es');
-  print('Example App||app.title'.tr()); // prints "EJEMPLO!!"
+  print('Example App||app.title'.tr());                // → "EJEMPLO!!!"
 
-  // English.
+  // English (with a self-reference and a runtime `{additional}` slot).
   await reader.read('en-us');
-  print('Example App||app.title'.tr()); // prints "ENGLISH X EXAMPLE!!! additional"
+  print('Example App||app.title'.tr(
+    args: {'additional': 'of the app!'},
+  ));
+  // → "ENGLISH X EXAMPLE!!! of the app!"
 
-  // Undefined, defaults to "Example App".
+  // Unknown locale → primary pass falls back to the default text,
+  // secondary pass still substitutes args.
   await reader.read('qwerty');
-  print(
-    'Example {App;;app}||app.title'.tr(args: {'app': 'Application'}),
-  );
-
-  // You can also pass custom arguments to the translation.
-  await reader.read('en-us');
-  print(
-    'This is the <<<Example||app.title>>>'.tr(
-      args: {
-        // Replace {additional} in the translation with 'of the app!'.
-        'additional': 'of the app!',
-      },
-    ),
-  ); // prints "This is the ENGLISH X EXAMPLE!!! of the app!"
+  print('Hey {{Example {App|app}||app.title}} dude'.tr(
+    args: {'app': 'Application'},
+  ));
+  // → "Hey Example Application dude"
 }
 
-// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-
-final fileData = {
-  'assets/translations/de-de.yaml': YAML_FILE_DATA_DE_DE,
-  'assets/translations/es-es.yaml': YAML_FILE_DATA_ES_ES,
-  'assets/translations/en-us.yaml': YAML_FILE_DATA_EN_US,
-};
-
-const YAML_FILE_DATA_ES_ES = '''
-app:
-  title: EJEMPLO!!!
-''';
-
-const YAML_FILE_DATA_DE_DE = '''
+const fileData = {
+  'assets/translations/de-de.yaml': '''
 app:
   title: BEISPIEL!!!
-''';
-
-const YAML_FILE_DATA_EN_US = '''
+''',
+  'assets/translations/es-es.yaml': '''
+app:
+  title: EJEMPLO!!!
+''',
+  'assets/translations/en-us.yaml': '''
 example: X
 app:
   example: EXAMPLE
-  # You can reference other translations within this file, and use placeholders
-  # to insert values during runtime.
-  title: ENGLISH <<<example>>> <<<app.example>>>!!! {additional}
-''';
+  # You can reference other keys within this file, and use {placeholders}
+  # to insert values at runtime.
+  title: "ENGLISH {{example}} {{app.example}}!!! {additional}"
+''',
+};
 ```
+
+## `.tr()` always returns a String
+
+If something inside the substitution layer throws — a buggy mapper, a pathological input, a missing config — `.tr()` returns the original string verbatim. Translation is best-effort by design; you should never see a `.tr()` call crash your UI.
+
+## Flutter
+
+To rebuild the widget tree when the language changes, wrap your `MaterialApp` in a `ValueListenableBuilder` (or use the convenience widgets in `df_localization`) and rebuild on every `TranslationManager.setConfig(...)` call.
 
 <!-- END _README_CONTENT -->
 
 ---
 
-☝️ Please refer to the [API reference](https://pub.dev/documentation/df_config/) for more information.
+🔍 For more information, refer to the [API reference](https://pub.dev/documentation/df_config/).
 
 ---
 
@@ -124,7 +154,6 @@ This is an open-source project, and we warmly welcome contributions from everyon
 
 ### ☝️ Ways you can contribute
 
-- **Buy me a coffee:** If you'd like to support the project financially, consider [buying me a coffee](https://www.buymeacoffee.com/dev_cetera). Your support helps cover the costs of development and keeps the project growing.
 - **Find us on Discord:** Feel free to ask questions and engage with the community here: https://discord.gg/gEQ8y2nfyX.
 - **Share your ideas:** Every perspective matters, and your ideas can spark innovation.
 - **Help others:** Engage with other users by offering advice, solutions, or troubleshooting assistance.
@@ -141,7 +170,6 @@ If you're enjoying this package and find it valuable, consider showing your appr
 
 <a href="https://www.buymeacoffee.com/dev_cetera" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" height="40"></a>
 
-## 🧑‍⚖️ License
+## LICENSE
 
 This project is released under the [MIT License](https://raw.githubusercontent.com/dev-cetera/df_config/main/LICENSE). See [LICENSE](https://raw.githubusercontent.com/dev-cetera/df_config/main/LICENSE) for more information.
-

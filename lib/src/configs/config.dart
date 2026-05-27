@@ -16,24 +16,32 @@ import '/src/_etc/_etc.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// A configuration class, used to map strings to values.
+/// A configuration class that maps placeholder strings to values.
+///
+/// Holds two parallel representations of the same data:
+///  - [data] is the raw, untouched map as ingested via [setFields].
+///  - [parsedFields] is the same map after recursive placeholder
+///    resolution and flatten/expand into dotted keys, suitable for direct
+///    lookup by [map].
 class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
   //
   //
   //
 
-  /// The reference to the config file.
+  /// The reference to the config file (or `null` for an in-memory config).
   final TConfigRef? ref;
 
-  /// The parsed fields of the config.
+  /// The parsed, flattened-and-expanded fields used for lookups.
   late final Map<dynamic, dynamic> parsedFields;
 
-  // The unparsed data of the config.
+  /// The unparsed data as it was ingested.
   late final Map<dynamic, dynamic> data;
 
-  /// Specify to manually map the translation keys.
+  /// Optional hook to override how a key/default pair resolves before the
+  /// normal map lookup is attempted.
   final dynamic Function(TGetKeyAndDefaultValueResult textResult)? mapper;
 
+  /// Placeholder syntax used by this config.
   final PatternSettings settings;
 
   //
@@ -42,30 +50,31 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
 
   Config({
     this.ref,
-    this.settings = const PrimaryPatternSettings(),
+    this.settings = const PatternSettings(),
     this.mapper,
   }) {
-    this.parsedFields = {};
-    this.data = {};
+    parsedFields = <dynamic, dynamic>{};
+    data = <dynamic, dynamic>{};
   }
 
   //
   //
   //
 
-  /// Sets the fields of the config from a JSON map.
-  void setFields(Map<dynamic, dynamic> data) {
-    this.data
+  /// Replaces the fields of this config with those derived from [source].
+  ///
+  /// The previous [data] and [parsedFields] are cleared first, so calling
+  /// this twice does not accumulate stale state.
+  void setFields(Map<dynamic, dynamic> source) {
+    data
       ..clear()
-      ..addAll(data);
-    this.parsedFields
+      ..addAll(source);
+    parsedFields
       ..clear()
       ..addAll(
         JsonUtility.i.expandJson(
-          recursiveReplace(
-            data,
-            settings: this.settings,
-          ).mapKeys((e) => e.toString()),
+          recursiveReplace(source, settings: settings)
+              .mapKeys((e) => e.toString()),
         ),
       );
   }
@@ -74,7 +83,14 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
   //
   //
 
-  /// Maps a string to a value using this config.
+  /// Maps [value] against this config's fields, returning the resolved
+  /// value cast to [T] (or [fallback] / `null` if the resolution does
+  /// not produce a value of that type).
+  ///
+  /// [args] supplies ad-hoc placeholder values that take precedence over
+  /// [parsedFields]. [preferKey] forces a specific key, overriding any key
+  /// implied by `default||key` syntax. [settings] overrides this config's
+  /// default [PatternSettings] for this call only.
   T? map<T>(
     String value, {
     Map<dynamic, dynamic> args = const {},
@@ -82,41 +98,47 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
     String? preferKey,
     PatternSettings? settings,
   }) {
-    final settingsOverride = settings ?? this.settings;
+    final effectiveSettings = settings ?? this.settings;
     final expandedArgs = JsonUtility.i.expandJson(
       args.mapKeys((e) => e.toString()),
     );
-    var data = {...this.parsedFields, ...expandedArgs};
-    var input = _addOpeningAndClosing(
+    final combined = <dynamic, dynamic>{...parsedFields, ...expandedArgs};
+    final wrapped = _wrapIfNeeded(
       value,
-      opening: settingsOverride.opening,
-      closing: settingsOverride.closing,
+      opening: effectiveSettings.opening,
+      closing: effectiveSettings.closing,
     );
     final replaced = replacePatterns(
-      input,
-      data,
+      wrapped,
+      combined,
       preferKey: preferKey,
-      settings: settingsOverride,
+      settings: effectiveSettings,
     );
-    final result = letOrNull<T>(replaced) ?? fallback;
-    return result;
+    return letOrNull<T>(replaced) ?? fallback;
   }
 
   //
   //
   //
 
+  /// Identity comes from the [ref]; two configs with equal refs are
+  /// considered equal even if their data diverges in flight.
   @override
-  List<Object?> get props => [...?ref?.props];
+  List<Object?> get props => [ref];
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-String _addOpeningAndClosing(
+/// Wraps [input] with [opening]/[closing] when it does not already contain
+/// either token. Inputs that already contain a placeholder delimiter (in
+/// either direction) are left alone so existing patterns are not nested
+/// inadvertently.
+String _wrapIfNeeded(
   String input, {
   required String opening,
   required String closing,
 }) {
+  if (opening.isEmpty || closing.isEmpty) return input;
   var output = input;
   if (!input.contains(opening)) {
     output = '$opening$output';

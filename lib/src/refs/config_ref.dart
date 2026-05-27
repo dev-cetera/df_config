@@ -38,5 +38,5 @@ class ConfigRef<TRef, TType> extends Equatable {
   //
 
   @override
-  List<Object?> get props => [this.ref, this.type];
+  List<Object?> get props => [ref, type];
 }
