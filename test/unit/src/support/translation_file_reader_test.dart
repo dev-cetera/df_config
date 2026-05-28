@@ -23,7 +23,7 @@ void main() {
   });
 
   group('TranslationFileReader.read', () {
-    test('builds <tag>.<extension> when no fileName is given', () async {
+    test('builds posix <tag>.<extension> when no fileName is given', () async {
       String? capturedPath;
       final r = TranslationFileReader(
         translationsDirPath: const ['root', 'tr'],
@@ -34,13 +34,12 @@ void main() {
         },
       );
       await r.read('en');
-      expect(
-        capturedPath,
-        anyOf('root/tr/en.yaml', r'root\tr\en.yaml'),
-      );
+      // Always posix — Flutter rootBundle requires forward slashes on
+      // every platform, including Windows.
+      expect(capturedPath, 'root/tr/en.yaml');
     });
 
-    test('uses fileName when provided', () async {
+    test('uses fileName when provided (posix-joined)', () async {
       String? capturedPath;
       final r = TranslationFileReader(
         translationsDirPath: const ['root'],
@@ -51,7 +50,7 @@ void main() {
         },
       );
       await r.read('en', fileName: 'custom.yml');
-      expect(capturedPath, anyOf('root/custom.yml', r'root\custom.yml'));
+      expect(capturedPath, 'root/custom.yml');
     });
 
     test('per-call fileReader overrides instance fileReader', () async {

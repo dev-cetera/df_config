@@ -16,14 +16,17 @@ import '_etc.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// Hard cap on the input length [replacePatterns] will accept. Keeping
-/// this finite prevents an attacker (or a buggy producer) from feeding a
-/// multi-gigabyte string and exhausting memory. Set generously high for
-/// normal use; callers can pre-validate their inputs if they need more.
+/// Default cap on the input length [replacePatterns] will accept.
+///
+/// Keeping this finite prevents an attacker (or a buggy producer) from
+/// feeding a multi-gigabyte string and exhausting memory. Callers can
+/// override via the `maxInputLength` parameter when their domain
+/// genuinely needs larger inputs (e.g. medical drug-interaction
+/// catalogs that exceed 1 MiB).
 const int kReplacePatternsMaxInputLength = 1 << 20; // 1 MiB
 
-/// Hard cap on placeholders processed in a single call. Bounds the worst
-/// case where every character starts a new placeholder match.
+/// Default cap on placeholders processed in a single call. Bounds the
+/// worst case where every character starts a new placeholder match.
 const int kReplacePatternsMaxMatches = 10000;
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -31,26 +34,59 @@ const int kReplacePatternsMaxMatches = 10000;
 /// Replaces placeholders in [input] with values from [data], supporting
 /// default values and custom delimiters via [settings].
 ///
-/// Substitution is a *single* left-to-right pass — values inserted by the
-/// pass are not themselves re-scanned. This is deliberate: re-scanning
-/// would let a malicious or recursive value (e.g. `a = '{{a}}'`) loop
-/// forever, and would also make the order of substitutions matter in
-/// subtle ways. Callers that want multi-level resolution should pre-process
-/// their data via [recursiveReplace] (which performs bounded resolution at
-/// load time, not at lookup time).
+/// Substitution is a *single* left-to-right pass — values inserted by
+/// the pass are not themselves re-scanned. This is deliberate:
+/// re-scanning would let a malicious or recursive value (e.g.
+/// `a = '{{a}}'`) loop forever, and would also make the order of
+/// substitutions matter in subtle ways. Callers that want multi-level
+/// resolution should pre-process their data via [recursiveReplace]
+/// (which performs bounded resolution at load time, not at lookup
+/// time).
+///
+/// **Regex shape (important for `{{{...}}}` inputs).** The opening and
+/// closing delimiters are matched with a greedy `+` quantifier, so
+/// `{{{x}}}` is treated as a single placeholder whose body is `x` —
+/// the extra brace on each side is consumed. This is intentional and
+/// is what makes the auto-wrap path in [Config.map] safe: an input
+/// such as `'{X}||k'` gets wrapped to `'{{{X}||k}}'`, and the greedy
+/// match swallows the outer `{` correctly. If you need literal triple
+/// braces in your output, render them outside any placeholder.
+///
+/// **Direction-agnostic.** Matching operates on UTF-16 code units, so
+/// Arabic/Hebrew/Persian content and bidi-control characters pass
+/// through unchanged. To get locale-aware key folding (Turkish, etc.)
+/// or Unicode normalisation, supply [PatternSettings.caseFold].
+///
+/// **Safety:**
+///  - A buggy `settings.callback` cannot derail the whole call. Each
+///    invocation is wrapped in try/catch; on failure the value chain
+///    falls through to `suggested.toString()` ?? `default`. The
+///    swallowed error is surfaced via
+///    [TranslationManager.reportError] so a host that has installed an
+///    [TranslationManager.onError] sink can detect it.
+///  - [maxInputLength] and [maxMatches] are configurable so
+///    safety-critical callers can tighten or loosen the limits to fit
+///    their domain.
 @internal
 String replacePatterns(
   String input,
   Map<dynamic, dynamic> data, {
   String? preferKey,
   PatternSettings settings = const PatternSettings(),
+  int maxInputLength = kReplacePatternsMaxInputLength,
+  int maxMatches = kReplacePatternsMaxMatches,
 }) {
-  if (input.length > kReplacePatternsMaxInputLength) {
+  if (maxInputLength <= 0) {
+    throw ArgumentError.value(maxInputLength, 'maxInputLength', 'must be > 0');
+  }
+  if (maxMatches <= 0) {
+    throw ArgumentError.value(maxMatches, 'maxMatches', 'must be > 0');
+  }
+  if (input.length > maxInputLength) {
     throw ArgumentError.value(
       input.length,
       'input.length',
-      'exceeds kReplacePatternsMaxInputLength '
-          '($kReplacePatternsMaxInputLength)',
+      'exceeds maxInputLength ($maxInputLength)',
     );
   }
   if (settings.opening.isEmpty || settings.closing.isEmpty) {
@@ -64,13 +100,17 @@ String replacePatterns(
     multiLine: true,
     dotAll: true,
   );
-  // Lazily build the lower-cased lookup map once per call when the config
-  // is case-insensitive. Rebuilding it for every match would be O(n*m).
-  Map<dynamic, dynamic>? loweredCache;
+  // Lazily build the case-folded lookup map once per call when the
+  // config is case-insensitive. Rebuilding it for every match would be
+  // O(n*m). The fold function is taken from [PatternSettings] so a
+  // host that needs locale-aware folding (Turkish, Azerbaijani, RTL
+  // normalisation) gets a consistent fold across both key parsing and
+  // data lookup.
+  Map<dynamic, dynamic>? foldedCache;
   Map<dynamic, dynamic> lookup() {
     if (settings.caseSensitive) return data;
-    return loweredCache ??= data.map(
-      (k, v) => MapEntry(k.toString().toLowerCase(), v),
+    return foldedCache ??= data.map(
+      (k, v) => MapEntry(settings.foldKey(k.toString()), v),
     );
   }
 
@@ -79,21 +119,16 @@ String replacePatterns(
   var matches = 0;
   for (final match in regex.allMatches(input)) {
     matches++;
-    if (matches > kReplacePatternsMaxMatches) {
+    if (matches > maxMatches) {
       throw StateError(
-        'replacePatterns: exceeded kReplacePatternsMaxMatches '
-        '($kReplacePatternsMaxMatches)',
+        'replacePatterns: exceeded maxMatches ($maxMatches)',
       );
     }
     out.write(input.substring(cursor, match.start));
     final body = match.group(1)!;
     final p = getKeyAndDefaultValue(body, settings, preferKey: preferKey);
     final suggested = lookup()[p.key];
-    final replacement = settings.callback?.call(
-          p.key,
-          suggested,
-          p.defaultValue,
-        ) ??
+    final replacement = _safeCallback(settings, p, suggested) ??
         suggested?.toString() ??
         p.defaultValue;
     out.write(replacement);
@@ -105,10 +140,32 @@ String replacePatterns(
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
+/// Invokes [PatternSettings.callback] safely. If the user callback
+/// throws, the error is forwarded to [TranslationManager.reportError]
+/// (no-op when no sink is installed) and `null` is returned so the
+/// normal `suggested ?? default` fallback chain proceeds.
+String? _safeCallback(
+  PatternSettings settings,
+  TGetKeyAndDefaultValueResult p,
+  dynamic suggested,
+) {
+  final cb = settings.callback;
+  if (cb == null) return null;
+  try {
+    return cb(p.key, suggested, p.defaultValue);
+  } catch (e, s) {
+    TranslationManager.reportError('settings.callback', e, s);
+    return null;
+  }
+}
+
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
 @internal
 extension ReplaceAllPatternsOnStringX on String {
-  /// Replaces placeholders in this string with corresponding values from a
-  /// provided map, supporting default values and custom delimiters.
+  /// Replaces placeholders in this string with corresponding values
+  /// from a provided map, supporting default values and custom
+  /// delimiters.
   @internal
   String replacePatterns(
     Map<dynamic, dynamic> data, {

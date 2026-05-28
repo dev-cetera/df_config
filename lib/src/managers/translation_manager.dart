@@ -17,6 +17,18 @@ import '/_common.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
+/// Signature of the [TranslationManager.onError] sink.
+///
+/// [source] identifies where the error originated (e.g. `'tr'` for
+/// `String.tr()`, `'setConfig'` for [TranslationManager.setConfig]).
+typedef TranslationErrorSink = void Function(
+  String source,
+  Object error,
+  StackTrace stack,
+);
+
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
 /// Process-wide owner of the **active translation [FileConfig]** that
 /// `String.tr()` looks up against.
 ///
@@ -36,6 +48,12 @@ import '/_common.dart';
 /// );
 /// 'Hello||greeting'.tr();
 /// ```
+///
+/// For life-critical applications, install an [onError] sink to be
+/// notified of any internal error swallowed by `String.tr()` or any
+/// other error path. Without it, failures are completely silent — which
+/// is fine for non-critical UI but unacceptable when a wrong string
+/// could cause patient harm.
 abstract final class TranslationManager {
   //
   //
@@ -44,6 +62,20 @@ abstract final class TranslationManager {
   /// The currently active translation config. Reads are cheap and
   /// synchronous; writes go through [setConfig] which serialises them.
   static FileConfig get config => _active;
+
+  /// Optional sink called when an internal error is caught (by
+  /// `String.tr()` or by [setConfig]'s error-recovery path).
+  ///
+  /// Default is `null` — meaning errors are fully silent, matching the
+  /// non-throwing contract of `tr()`. Install a sink to forward errors
+  /// to your logger, telemetry, or test framework. The sink itself is
+  /// wrapped in a try/catch so a buggy sink cannot in turn break the
+  /// host.
+  ///
+  /// **Recommended for medical/safety-critical use:** set this to a
+  /// strict assertion in debug builds and to your telemetry pipeline
+  /// in release.
+  static TranslationErrorSink? onError;
 
   //
   //
@@ -83,6 +115,7 @@ abstract final class TranslationManager {
       _active = fileConfig;
       completer.complete(fileConfig);
     } catch (e, s) {
+      reportError('setConfig', e, s);
       completer.completeError(e, s);
     }
   }
@@ -91,12 +124,32 @@ abstract final class TranslationManager {
   //
   //
 
-  /// Reset the active config and the write chain. Intended for tests
-  /// and for hosts that need to clear translation state between
-  /// sessions (e.g. between integration runs).
+  /// Forwards [error] to [onError] without throwing if the sink itself
+  /// misbehaves. Intended for use by internals that swallow errors and
+  /// want to expose them for diagnostics.
+  static void reportError(String source, Object error, StackTrace stack) {
+    final sink = onError;
+    if (sink == null) return;
+    try {
+      sink(source, error, stack);
+    } catch (_) {
+      // A buggy sink must not break the host. Errors here are
+      // intentionally swallowed — the caller's primary error has
+      // already been propagated via its own mechanism.
+    }
+  }
+
+  //
+  //
+  //
+
+  /// Reset the active config, the write chain, and the [onError] sink.
+  /// Intended for tests and for hosts that need to clear translation
+  /// state between sessions (e.g. between integration runs).
   @visibleForTesting
   static void resetForTesting() {
     _active = FileConfig();
     _writeChain = Future<void>.value();
+    onError = null;
   }
 }

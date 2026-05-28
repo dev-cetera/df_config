@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.8.0]
+
+- Released @ 5/2026 (UTC)
+- feat: Add `TranslationManager.onError` sink and `TranslationErrorSink` typedef so swallowed errors from `String.tr()` and `setConfig` can be observed
+- feat: Add `PatternSettings.caseFold` for locale-aware key folding (Turkish, Azerbaijani, NFC normalisation, etc.) plus `PatternSettings.foldKey` helper
+- feat: Add configurable `maxInputLength` / `maxMatches` parameters to `replacePatterns`
+- fix: `TranslationFileReader` now joins paths with posix separators so translations load on Windows under Flutter's `rootBundle`
+- breaking: `Config.setFields` now throws `StateError` when two source keys collide after `toString()`, and applies changes atomically (previous state is preserved on failure)
+- breaking: `recursiveReplace` now throws `StateError` on cyclic input and enforces a hard depth cap to prevent unbounded loops
+- breaking: `String.cf<T>` signature tightened to `Config<ConfigRef<dynamic, dynamic>>`
+
 ## [0.7.5]
 
 - Released @ 6/2025 (UTC)

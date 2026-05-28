@@ -140,8 +140,7 @@ void main() {
       expect(out, 'Hey Example Application dude');
     });
 
-    test('same input with app.title in config uses the translation',
-        () async {
+    test('same input with app.title in config uses the translation', () async {
       await TranslationManager.setConfig(
         _yaml('en', 'app:\n  title: MyApp'),
       );
@@ -269,7 +268,9 @@ void main() {
       // single-brace pattern noise.
       expect(
         '{{key.0}}-{{key.1}}'.tr(
-          args: {'key': const [1, 2, 3]},
+          args: {
+            'key': const [1, 2, 3],
+          },
           secondarySettings: null,
         ),
         '1-2',
@@ -323,8 +324,8 @@ void main() {
       // No `app.title` in args, so primary uses default
       // `Example {App|app}`. Then secondary resolves `{App|app}` against
       // args.
-      final out = '{{Example {App|app}||app.title}}'
-          .tr(args: {'app': 'Application'});
+      final out =
+          '{{Example {App|app}||app.title}}'.tr(args: {'app': 'Application'});
       expect(out, 'Example Application');
     });
 

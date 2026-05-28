@@ -61,22 +61,48 @@ class Config<TConfigRef extends ConfigRef<dynamic, dynamic>> extends Equatable {
   //
   //
 
-  /// Replaces the fields of this config with those derived from [source].
+  /// Replaces the fields of this config with those derived from
+  /// [source].
   ///
-  /// The previous [data] and [parsedFields] are cleared first, so calling
-  /// this twice does not accumulate stale state.
+  /// **Atomicity.** Both [data] and [parsedFields] are derived into
+  /// local variables first; only after every step succeeds are the
+  /// underlying maps cleared and repopulated. If any step throws (a
+  /// cycle, an over-deep recursion, a key collision, etc.), the
+  /// config's previous state is preserved unchanged. Safety-critical
+  /// hosts must be able to rely on never observing a half-applied
+  /// config.
+  ///
+  /// **Key-collision safety.** If two distinct top-level keys in
+  /// [source] stringify to the same string (e.g. `1` and `"1"`),
+  /// [setFields] throws [StateError]. Silently overwriting one with
+  /// the other would be a data-loss bug in safety-critical contexts.
   void setFields(Map<dynamic, dynamic> source) {
+    final stringifiedKeys = <String>{};
+    for (final k in source.keys) {
+      final s = k.toString();
+      if (!stringifiedKeys.add(s)) {
+        throw StateError(
+          'Config.setFields: duplicate key after stringification: "$s". '
+          'Two distinct source keys collide on toString() — refusing to '
+          'silently drop one.',
+        );
+      }
+    }
+    // Compute the new state into locals FIRST. If anything below
+    // throws, both [data] and [parsedFields] stay at their previous
+    // values — the config is never observed in a half-written state.
+    final nextData = Map<dynamic, dynamic>.of(source);
+    final resolved = recursiveReplace(source, settings: settings);
+    final nextParsed = JsonUtility.i.expandJson(
+      resolved.mapKeys((e) => e.toString()),
+    );
+
     data
       ..clear()
-      ..addAll(source);
+      ..addAll(nextData);
     parsedFields
       ..clear()
-      ..addAll(
-        JsonUtility.i.expandJson(
-          recursiveReplace(source, settings: settings)
-              .mapKeys((e) => e.toString()),
-        ),
-      );
+      ..addAll(nextParsed);
   }
 
   //

@@ -172,8 +172,7 @@ people:
       expect(
         () => csvToData('a,1\na,2'),
         throwsA(
-          isA<ConfigParseException>()
-              .having((e) => e.source, 'source', 'csv'),
+          isA<ConfigParseException>().having((e) => e.source, 'source', 'csv'),
         ),
       );
     });

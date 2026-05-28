@@ -31,7 +31,13 @@ class TranslationFileReader {
   final ConfigFileType fileType;
 
   /// The directory path segments where the translation files live.
-  /// Joined with [path.joinAll], so callers can stay platform-agnostic.
+  ///
+  /// Joined with `package:path`'s posix-style joiner — forward slashes
+  /// only — because Flutter's `rootBundle.loadString` requires posix
+  /// paths on every platform, including Windows. `dart:io`'s `File`
+  /// accepts both styles, so posix is the safe cross-platform default.
+  /// If you need native paths, normalise inside your [fileReader]
+  /// callback.
   final List<String> translationsDirPath;
 
   /// Optional hook for custom key resolution. See [Config.mapper].
@@ -78,7 +84,11 @@ class TranslationFileReader {
         'languageTag must be non-empty when fileName is not provided.',
       );
     }
-    final filePath = joinAll([
+    // Use posix joining unconditionally. Flutter's `rootBundle` only
+    // accepts forward-slash paths, and `dart:io` accepts both, so
+    // posix is the only style that works everywhere without per-host
+    // normalisation.
+    final filePath = posix.joinAll([
       ...translationsDirPath,
       fileName ?? '$languageTag.${fileType.extension}',
     ]);

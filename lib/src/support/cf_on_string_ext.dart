@@ -16,8 +16,17 @@ import '/_common.dart';
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 extension CfOnStringExt on String {
-  /// Maps the string to using the active config file.
-  T? cf<T>(Config config, [Map<dynamic, dynamic> args = const {}]) {
+  /// Resolves this string against [config], returning the substituted
+  /// value cast to [T] (or `null` if the result is not of that type).
+  ///
+  /// Unlike [String.tr] this method does **not** swallow exceptions.
+  /// `cf<T>` is intended for non-localisation lookups where a thrown
+  /// configuration error should surface to the caller; if you want the
+  /// best-effort "always returns a String" behaviour, use `tr()`.
+  T? cf<T>(
+    Config<ConfigRef<dynamic, dynamic>> config, [
+    Map<dynamic, dynamic> args = const {},
+  ]) {
     return config.map<T>(this, args: args);
   }
 }

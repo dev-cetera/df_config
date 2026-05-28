@@ -46,10 +46,8 @@ TGetKeyAndDefaultValueResult getKeyAndDefaultValue(
   final left = parts.isNotEmpty ? parts[0] : '';
   final right = parts.length > 1 ? parts[1] : null;
   final defaultValue = left;
-  var key = preferKey ?? right ?? left;
-  if (!settings.caseSensitive) {
-    key = key.toLowerCase();
-  }
+  final rawKey = preferKey ?? right ?? left;
+  final key = settings.foldKey(rawKey);
   return (key: key, defaultValue: defaultValue);
 }
 

@@ -19,7 +19,11 @@ import 'package:test/test.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-const defaultTranslationsDirPath = ['test', 'translations_test', 'translations'];
+const defaultTranslationsDirPath = [
+  'test',
+  'translations_test',
+  'translations',
+];
 
 void main() {
   group(1, () {

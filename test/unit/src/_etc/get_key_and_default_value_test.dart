@@ -76,8 +76,7 @@ void main() {
       expect(r.key, 'b');
     });
 
-    test('splits on LAST delimiter occurrence (left-side may contain it)',
-        () {
+    test('splits on LAST delimiter occurrence (left-side may contain it)', () {
       final r = getKeyAndDefaultValue(
         'a||b||c',
         const PrimaryPatternSettings(),
