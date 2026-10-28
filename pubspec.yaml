@@ -13,13 +13,9 @@
 
 name: df_config
 homepage: https://dev-cetera.com/
-repository: https://github.com/robmllze/df_config
-funding:
-  - https://www.buymeacoffee.com/dev_cetera
-  - https://www.patreon.com/c/robelator
-  - https://github.com/sponsors/robelator
+repository: https://github.com/dev-cetera/df_config
 description: A package that provides methods to load configuration data and access it at runtime.
-version: 0.8.4
+version: 0.9.0
 topics:
   - cache
   - json

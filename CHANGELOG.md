@@ -1,5 +1,11 @@
 # Changelog
 
+
+## [0.9.0]
+
+- chore: standardize README and CI/CD workflows, remove donation links, update contact info and repository links
+- chore: resolve analyzer issues
+
 ## [0.8.4]
 
 - chore: drop the legacy `analyzer.plugins: [custom_lint]` block from `analysis_options.yaml` (and `example/`). `custom_lint` is not a dependency of this package, so the block was inert, and Dart 3.11 now warns on legacy analyzer plugins — which failed CI's `dart analyze --fatal-infos`.
